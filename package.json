@@ -8,9 +8,12 @@
   "license": "ISC",
   "scripts": {
     "start": "npm run build:server && npm run build:client && npm run start:electron",
+    "start:dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run start:electron\"",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
     "build": "npm run build:client && npm run build:server",
+    "dev:client": "cd client && npm run start",
+    "dev:server": "cd server && npm run dev",
     "package": "electron-builder",
     "start:server": "cd server && npm run start",
     "start:client": "cd client && npm run start",
