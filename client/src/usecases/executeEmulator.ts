@@ -15,4 +15,5 @@ export class ExecuteEmulatorUseCase {
       throw new Error('Erro ao iniciar emulador');
     }
   }
+
 }

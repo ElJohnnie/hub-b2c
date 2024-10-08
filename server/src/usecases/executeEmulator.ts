@@ -42,3 +42,38 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
         throw new Error('Sistema operacional não suportado');
     }
 };
+
+
+export const getEmulatorListUseCase = () => {
+    if (os.platform() === "win32") {
+        const bashRun = spawn("/bin/bash", ["../scripts/getAdvs.bat"]);
+		return new Promise<string>((resolve, reject) => {
+			bashRun.on("error", (err) => {
+			reject(`Erro ao abrir o terminal: ${err}`);
+			});
+			bashRun.stderr.on("data", (err) => {
+			reject(`Erro ao capturar os dados: ${err}`);
+			});
+			bashRun.stdout.on("data", (data) => {
+			resolve(data);
+			console.log("stdout: ${data}");
+			});
+		});
+    } else if (os.platform() === "linux") {
+		const bashRun = spawn("bash", ["../scripts/getAdvs.bat"]);
+		return new Promise<string>((resolve, reject) => {
+			bashRun.on("error", (err) => {
+			reject(`Erro ao abrir o terminal: ${err}`);
+			});
+			bashRun.stderr.on("data", (err) => {
+			reject(`Erro ao capturar os dados: ${err}`);
+			});
+			bashRun.stdout.on("data", (data) => {
+			resolve(data);
+			console.log("stdout: ${data}");
+			});
+		});
+    }
+  
+    throw new Error("Sistema operacional não suportado");
+};
