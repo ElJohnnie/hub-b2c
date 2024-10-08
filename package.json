@@ -5,9 +5,9 @@
   "main": "src/main.js",
   "homepage": "https://seu-repositorio.com",
   "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
-  "license": "ISC", 
+  "license": "ISC",
   "scripts": {
-    "start": "concurrently \"npm run build:server\" \"npm run build:client\" \"npm run start:electron\"",
+    "start": "npm run build:server && npm run build:client && npm run start:electron",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
     "build": "npm run build:client && npm run build:server",
@@ -18,9 +18,10 @@
     "full-install": "npm install && cd client && npm install && cd ../server && npm install"
   },
   "devDependencies": {
-    "electron": "^32.1.2",
     "concurrently": "^7.4.0",
-    "electron-builder": "^25.1.7"
+    "electron": "^32.1.2",
+    "electron-builder": "^25.1.7",
+    "electron-is-dev": "^3.0.1"
   },
   "electronBuilder": {
     "appId": "com.hub.b2c",
@@ -41,7 +42,10 @@
       "category": "public.app-category.productivity"
     },
     "linux": {
-      "target": ["AppImage", "deb"]
+      "target": [
+        "AppImage",
+        "deb"
+      ]
     }
   }
 }

@@ -1,14 +1,14 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const childProcess = require('child_process');
-const url = require('url');
+
 
 let mainWindow = null;
 
 function startBackend() {
   console.log('Iniciando o backend Express...');
 
-  const serverProcess = childProcess.spawn('npm', ['run', 'start'], {
+  const serverProcess = childProcess.spawn('npm', ['run', 'dev'], {
     cwd: path.join(__dirname, '../server'),
     stdio: 'inherit',
   });
@@ -29,37 +29,35 @@ function startBackend() {
   console.log('Processo do backend iniciado com sucesso.');
 }
 
+async function createWindow() {
+  const { default: isDev } = await import('electron-is-dev');
 
-function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
+      disableHardwareAcceleration: true, 
+      enableBlinkFeatures: 'None',
     },
+    useVsync: false,
   });
 
-  mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, '../client/build/index.html'),
-      protocol: 'file:',
-      slashes: true,
-    })
-  );
+  const startURL = isDev
+    ? 'http://localhost:3000'
+    : `file://${path.join(__dirname, '../build/index.html')}`;
 
-  mainWindow.webContents.openDevTools();
+  mainWindow.loadURL(startURL);
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  mainWindow.openDevTools();
+
+  mainWindow.on('closed', () => (mainWindow = null));
 }
 
-
 app.on('ready', () => {
-    startBackend();
-    createWindow();
+  // startBackend();
+  createWindow();
 });
 
 app.on('window-all-closed', () => {
