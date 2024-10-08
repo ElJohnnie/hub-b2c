@@ -5,16 +5,18 @@ const net = require('net');
 const isDev = process.env.NODE_ENV === 'development';
 
 let mainWindow = null;
+let serverProcess = null;  // Armazena o processo do servidor (backend)
+let buildProcess = null;   // Armazena o processo de build (se necessário)
 
 function startBackend() {
   console.log('Iniciando o backend Express...');
 
-  const buildProcess = childProcess.spawn('npm', ['run', 'build'], {
+  buildProcess = childProcess.spawn('npm', ['run', 'build'], {
     cwd: path.join(__dirname, '../server'),
     stdio: 'inherit',
   });
 
-  const serverProcess = childProcess.spawn('npm', ['run', isDev ? 'dev' : 'start'], {
+  serverProcess = childProcess.spawn('npm', ['run', isDev ? 'dev' : 'start'], {
     cwd: path.join(__dirname, '../server'),
     stdio: 'inherit',
   });
@@ -135,6 +137,15 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
+  if (serverProcess) {
+    console.log('Encerrando o backend...');
+    serverProcess.kill();
+  }
+
+  if (buildProcess) {
+    buildProcess.kill();
+  }
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
