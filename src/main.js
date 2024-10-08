@@ -13,6 +13,11 @@ function startBackend() {
     stdio: 'inherit',
   });
 
+  if (!serverProcess) {
+    console.error('Erro ao tentar iniciar o processo do backend.');
+    return;
+  }
+
   serverProcess.on('error', (err) => {
     console.error('Erro ao iniciar o backend:', err);
   });
@@ -20,7 +25,10 @@ function startBackend() {
   serverProcess.on('close', (code) => {
     console.log(`Backend encerrado com código ${code}`);
   });
+
+  console.log('Processo do backend iniciado com sucesso.');
 }
+
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -48,9 +56,10 @@ function createWindow() {
   });
 }
 
+
 app.on('ready', () => {
-  startBackend();
-  createWindow();
+    startBackend();
+    createWindow();
 });
 
 app.on('window-all-closed', () => {
