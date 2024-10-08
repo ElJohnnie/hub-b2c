@@ -1,0 +1,46 @@
+{
+  "name": "hub-b2c",
+  "version": "1.0.0",
+  "description": "Hub B2C",
+  "main": "src/main.js",
+  "homepage": "https://seu-repositorio.com",
+  "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
+  "license": "ISC", 
+  "scripts": {
+    "start": "concurrently \"npm run build:server\" \"npm run build:client\" \"npm run start:electron\"",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "build": "npm run build:client && npm run build:server",
+    "package": "electron-builder",
+    "start:server": "cd server && npm run start",
+    "start:client": "cd client && npm run start",
+    "start:electron": "electron src/main.js"
+  },
+  "devDependencies": {
+    "electron": "^32.1.2",
+    "concurrently": "^7.4.0",
+    "electron-builder": "^25.1.7"
+  },
+  "electronBuilder": {
+    "appId": "com.hub.b2c",
+    "productName": "Hub B2C",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist/**/*",
+      "src/main.js",
+      "client/build/**/*",
+      "server/dist/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"]
+    }
+  }
+}
