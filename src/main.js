@@ -2,34 +2,28 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const childProcess = require('child_process');
 const net = require('net');
+require('dotenv').config();
+
 const isDev = process.env.NODE_ENV === 'development';
 
 let mainWindow = null;
-let serverProcess = null;  // Armazena o processo do servidor (backend)
-let buildProcess = null;   // Armazena o processo de build (se necessário)
 
 function startBackend() {
   console.log('Iniciando o backend Express...');
 
-  buildProcess = childProcess.spawn('npm', ['run', 'build'], {
-    cwd: path.join(__dirname, '../server'),
+  const serverPath = isDev
+    ? path.join(__dirname, '../server')
+    : path.join(process.resourcesPath, 'server');
+
+  const buildProcess = childProcess.spawn('npm', ['run', 'build'], {
+    cwd: serverPath,
     stdio: 'inherit',
   });
 
-  serverProcess = childProcess.spawn('npm', ['run', isDev ? 'dev' : 'start'], {
-    cwd: path.join(__dirname, '../server'),
+  const serverProcess = childProcess.spawn('npm', ['run', isDev ? 'dev' : 'start'], {
+    cwd: serverPath,
     stdio: 'inherit',
   });
-
-  if (!buildProcess) {
-    console.error('Erro ao tentar iniciar o processo de build do backend.');
-    return;
-  }
-
-  if (!serverProcess) {
-    console.error('Erro ao tentar iniciar o processo do backend.');
-    return;
-  }
 
   buildProcess.on('error', (err) => {
     console.error('Erro ao iniciar o build do backend:', err);
@@ -72,15 +66,12 @@ async function createWindow() {
   if (isDev) {
     console.log('Iniciando o processo de desenvolvimento do frontend...');
 
+    const clientPath = path.join(__dirname, '../client');
+
     const devFrontProcess = childProcess.spawn('npm', ['run', 'start'], {
-      cwd: path.join(__dirname, '../client'),
+      cwd: clientPath,
       stdio: 'inherit',
     });
-
-    if (!devFrontProcess) {
-      console.error('Erro ao tentar iniciar o processo de build dev do frontend.');
-      return;
-    }
 
     devFrontProcess.on('error', (err) => {
       console.error('Erro ao iniciar o build dev do frontend:', err);
@@ -123,7 +114,7 @@ async function createWindow() {
       useVsync: false,
     });
 
-    const startURL = `file://${path.join(__dirname, '../client/build/index.html')}`;
+    const startURL = `file://${path.join(process.resourcesPath, 'client/build/index.html')}`;
 
     mainWindow.loadURL(startURL);
 
@@ -137,15 +128,6 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
-  if (serverProcess) {
-    console.log('Encerrando o backend...');
-    serverProcess.kill();
-  }
-
-  if (buildProcess) {
-    buildProcess.kill();
-  }
-
   if (process.platform !== 'darwin') {
     app.quit();
   }
