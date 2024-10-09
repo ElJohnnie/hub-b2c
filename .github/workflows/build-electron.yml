@@ -10,6 +10,40 @@ on:
       - main
 
 jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.10.0'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bump version
+        id: bump-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(echo $VERSION | awk -F. '{$NF+=1; OFS="."; print $0}')
+          echo "New version: $NEW_VERSION"
+          npm version $NEW_VERSION --no-git-tag-version
+          echo "version=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Commit and push new version
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json
+          git commit -m "Bump version to ${{ env.version }}"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build-windows:
     runs-on: windows-latest
 
@@ -21,6 +55,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '18.10.0'
+
+      # Instalar dependências na raiz
+      - name: Install dependencies for client (frontend)
+        run: |
+          npm install 
 
       # Instalar dependências do frontend (client)
       - name: Install dependencies for client (frontend)
@@ -63,6 +102,11 @@ jobs:
         with:
           node-version: '18.10.0'
 
+      # Instalar dependências na raiz
+      - name: Install dependencies for client (frontend)
+        run: |
+          npm install 
+          
       # Instalar dependências do frontend (client)
       - name: Install dependencies for client (frontend)
         run: |
