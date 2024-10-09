@@ -7,9 +7,8 @@
   "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "start": "concurrently \"npm run start:electron\" \"cd client && npm start\" \"cd server && npm run dev\"",
     "package": "electron-builder",
-    "start:electron": "electron src/main.js",
+    "start": "electron src/main.js",
     "full-install": "npm install && cd client && npm install && cd ../server && npm install",
     "build": "cd client && npm run build && cd ../server && npm run build && cd .. && npm run package"
   },
