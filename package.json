@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Hub B2C",
   "main": "src/main.js",
-  "homepage": "https://seu-repositorio.com",
+  "homepage": "https://github.com/ElJohnnie/hub-b2c",
   "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
   "license": "ISC",
   "scripts": {
@@ -31,15 +31,39 @@
       "server/dist/**/*"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "ElJohnnie",
+          "repo": "hub-b2c",
+          "token": "${GITHUB_TOKEN}"
+        }
+      ]
     },
     "mac": {
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "ElJohnnie",
+          "repo": "hub-b2c",
+          "token": "${GITHUB_TOKEN}"
+        }
+      ]
     },
     "linux": {
       "target": [
         "AppImage",
         "deb"
+      ],
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "ElJohnnie",
+          "repo": "hub-b2c",
+          "token": "${GITHUB_TOKEN}"
+        }
       ]
     }
   },
