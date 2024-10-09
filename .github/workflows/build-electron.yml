@@ -57,6 +57,35 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+      - name: Check if Windows zip exists and is not empty
+        run: |
+          if (!(Test-Path "windows-$VERSION.zip") -or ((Get-Item "windows-$VERSION.zip").length -eq 0)) {
+            Write-Error "Windows zip was not created or is empty!"
+          }
+        shell: pwsh
+
+      - name: Create or Update GitHub Release for Windows
+        id: create_release_windows
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          body: 'Release notes for Windows version ${{ github.sha }}'
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Upload Windows package to GitHub Releases
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          --data-binary @"windows-${VERSION}.zip" \
+          -H "Content-Type: application/zip" \
+          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release_windows.outputs.id }}/assets?name=windows-${VERSION}.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
   build-ubuntu:
     runs-on: ubuntu-latest
 
@@ -105,33 +134,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-  create-release:
-    runs-on: ubuntu-latest
-    needs: [build-windows, build-ubuntu]
+      - name: Check if Ubuntu zip exists and is not empty
+        run: |
+          if [ ! -s "ubuntu-$VERSION.zip" ]; then
+            echo "Ubuntu zip was not created or is empty!"
+            exit 1
+          fi
 
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
-      - name: Create GitHub Release
-        id: create_release
+      - name: Create or Update GitHub Release for Ubuntu
+        id: create_release_ubuntu
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ secrets.VERSION }}
-          release_name: Release ${{ secrets.VERSION }}
-          body: 'Release notes for v${{ secrets.VERSION }}'
+          tag_name: v${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          body: 'Release notes for Ubuntu version ${{ github.sha }}'
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Upload Windows package to GitHub Releases
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          --data-binary @"windows-${VERSION}.zip" \
-          -H "Content-Type: application/zip" \
-          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=windows-${VERSION}.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -141,6 +159,6 @@ jobs:
           curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
           --data-binary @"ubuntu-${VERSION}.zip" \
           -H "Content-Type: application/zip" \
-          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=ubuntu-${VERSION}.zip"
+          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release_ubuntu.outputs.id }}/assets?name=ubuntu-${VERSION}.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
