@@ -79,9 +79,9 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          --data-binary @"windows-${VERSION}.zip" \
+          --data-binary @"windows-hub-b2c.zip" \
           -H "Content-Type: application/zip" \
-          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release_windows.outputs.id }}/assets?name=windows-${VERSION}.zip"
+          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release_windows.outputs.id }}/assets?name=windows-hub-b2c.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -155,8 +155,8 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-          --data-binary @"ubuntu-${VERSION}.zip" \
+          --data-binary @"ubuntu-hub-b2c.zip" \
           -H "Content-Type: application/zip" \
-          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release_ubuntu.outputs.id }}/assets?name=ubuntu-${VERSION}.zip"
+          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release_ubuntu.outputs.id }}/assets?name=ubuntu-hub-b2c.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
