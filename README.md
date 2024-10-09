@@ -11,6 +11,7 @@ A aplicação combina um back-end robusto utilizando **Express.js** com uma inte
 - **Express.js**: Framework Node.js utilizado para gerenciar as rotas do servidor e API RESTful.
 - **Node.js**: Ambiente de execução JavaScript utilizado tanto no front-end quanto no back-end.
 - **TypeScript**: Linguagem usada para adicionar tipagem estática ao JavaScript, melhorando a segurança e manutenibilidade do código.
+- **Python 3**: Inicialmente para gerar as janelas chromedriver, mas em princípio será descontinuado.
 
 ## Pré-requisitos
 
@@ -27,7 +28,6 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
     sudo apt install xterm
 
 ## Estrutura do Projeto
-
 
     hub-b2c/
     ├── client/                     # Aplicação React (front-end)
