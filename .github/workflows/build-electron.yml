@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-windows:
-    # if: ${{ github.event.inputs.build-windows == 'yes' }}
+    if: ${{ github.event.inputs.build-windows == 'yes' }}
     runs-on: windows-latest
 
     steps:
@@ -65,8 +65,8 @@ jobs:
           tag_name: v${{ github.run_number }}
           release_name: Release ${{ github.run_number }}
           body: 'Release notes for v${{ github.run_number }}'
-          draft: false
-          prerelease: false
+          draft: false  # Set draft to false so that the release is not marked as a draft
+          prerelease: false  # Set prerelease to false if it's not needed
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -137,8 +137,8 @@ jobs:
           tag_name: v${{ github.run_number }}
           release_name: Release ${{ github.run_number }}
           body: 'Release notes for v${{ github.run_number }}'
-          draft: false
-          prerelease: false
+          draft: false  # Set draft to false so that the release is not marked as a draft
+          prerelease: false  # Set prerelease to false if it's not needed
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
