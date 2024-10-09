@@ -14,16 +14,12 @@ export const executeCommandUseCase = async (body: { dir: string; command: string
     console.log(`Shell: ${shell}`);
 
     return new Promise<string>((resolve, reject) => {
-        const process = exec(fullCommand, { shell: shell || '/bin/bash' }, (error, stdout, stderr) => {
-            if (error) {
+        exec(fullCommand, { shell: shell || '/bin/bash' }, (error, stdout, stderr) => {
+            if (stderr) {
                 reject(`Erro: ${stderr}, ${error}`);
             } else {
                 resolve(stdout);
             }
-        });
-
-        process.on('error', (err) => {
-            reject(`Erro ao receber o comando: ${err}`);
         });
 
         resolve(`Comando recebido com sucesso`);

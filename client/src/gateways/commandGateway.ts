@@ -79,8 +79,6 @@ export class CommandGateway {
       method: 'GET',
     });
 
-    console.log(response);
-
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error || 'Erro ao executar comando de teste');

@@ -13,7 +13,7 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
 
         const process = spawn(terminalCommand, terminalArgs, { detached: true });
         return new Promise<string>((resolve, reject) => {
-            process.on('error', (err) => {
+            process.stdout.on('error', (err) => {
                 reject(`Erro ao abrir o terminal: ${err}`);
             });
             resolve('AVD aberto com o comando no Windows.');
@@ -24,7 +24,7 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
 
         const process = spawn(terminalCommand, terminalArgs, { detached: true });
         return new Promise<string>((resolve, reject) => {
-            process.on('error', (err) => {
+            process.stdout.on('error', (err) => {
                 console.log('Erro ao abrir o terminal: ', err);
                 reject(`Erro ao abrir o terminal: ${err}`);
             });
