@@ -10,7 +10,8 @@
     "start": "concurrently \"npm run start:electron\" \"cd client && npm start\" \"cd server && npm run dev\"",
     "package": "electron-builder",
     "start:electron": "electron src/main.js",
-    "full-install": "npm install && cd client && npm install && cd ../server && npm install"
+    "full-install": "npm install && cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build && cd ../server && npm run build && cd .. && npm run package"
   },
   "devDependencies": {
     "concurrently": "^7.4.0",

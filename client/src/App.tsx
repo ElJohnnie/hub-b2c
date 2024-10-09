@@ -73,7 +73,7 @@ const App: React.FC = () => {
             onClick={() => handleExecuteShellCommand('scripts', 'tracking.sh')}
           />
           <Button
-            label='Comando de teste'
+            label='Listar Devices Android'
             onClick={() => handleGetEmulator()}
           />
         </div>
