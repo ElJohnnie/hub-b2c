@@ -51,15 +51,14 @@ jobs:
 
       - name: Zip Windows package (from dist folder)
         run: |
-          $VERSION = (node -p "require('./package.json').version")
-          Compress-Archive -Path ./dist/* -DestinationPath "windows-$VERSION.zip"
+          Compress-Archive -Path ./dist/* -DestinationPath "windows-hub-b2c.zip"
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Check if Windows zip exists and is not empty
         run: |
-          if (!(Test-Path "windows-$VERSION.zip") -or ((Get-Item "windows-$VERSION.zip").length -eq 0)) {
+          if (!(Test-Path "windows-hub-b2c.zip") -or ((Get-Item "windows-hub-b2c.zip").length -eq 0)) {
             Write-Error "Windows zip was not created or is empty!"
           }
         shell: pwsh
@@ -86,7 +85,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-  build-ubuntu:
+  build-linux:
     runs-on: ubuntu-latest
 
     steps:
@@ -129,14 +128,13 @@ jobs:
 
       - name: Zip Ubuntu package (from dist folder)
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          zip -r "ubuntu-$VERSION.zip" dist/*
+          zip -r "ubuntu-hub-b2c.zip" dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Check if Ubuntu zip exists and is not empty
         run: |
-          if [ ! -s "ubuntu-$VERSION.zip" ]; then
+          if [ ! -s "ubuntu-hub-b2c.zip" ]; then
             echo "Ubuntu zip was not created or is empty!"
             exit 1
           fi
@@ -145,7 +143,7 @@ jobs:
         id: create_release_ubuntu
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ github.sha }}  # Use SHA as tag_name to ensure consistency
+          tag_name: v${{ github.sha }}
           release_name: Release ${{ github.sha }}
           body: 'Release notes for Ubuntu version ${{ github.sha }}'
           draft: false
