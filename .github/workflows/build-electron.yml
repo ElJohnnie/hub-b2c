@@ -22,11 +22,23 @@ jobs:
         with:
           node-version: '18.10.0'
 
-      - name: Install dependencies
-        run: npm install
+      # Instalar dependências do frontend (client)
+      - name: Install dependencies for client (frontend)
+        run: |
+          cd client
+          npm install
+
+      # Instalar dependências do backend (server)
+      - name: Install dependencies for server (backend)
+        run: |
+          cd server
+          npm install
+
+      - name: Build App for Windows
+        run: npm run build
 
       - name: Build Electron App for Windows
-        run: npm run build
+        run: npm run package
 
       - name: Zip Windows package
         run: zip -r windows-$(node -p "require('./package.json').version").zip dist/
@@ -51,14 +63,26 @@ jobs:
         with:
           node-version: '18.10.0'
 
-      - name: Install dependencies
-        run: npm install
+      # Instalar dependências do frontend (client)
+      - name: Install dependencies for client (frontend)
+        run: |
+          cd client
+          npm install
+
+      # Instalar dependências do backend (server)
+      - name: Install dependencies for server (backend)
+        run: |
+          cd server
+          npm install
 
       - name: Install required packages for Linux build
         run: sudo apt-get update && sudo apt-get install -y fakeroot rpm 
 
-      - name: Build Electron App for Ubuntu
+      - name: Build App for Ubuntu
         run: npm run build
+
+      - name: Build Electron App for Ubuntu
+        run: npm run package
 
       - name: Zip Ubuntu package
         run: zip -r ubuntu-$(node -p "require('./package.json').version").zip dist/
