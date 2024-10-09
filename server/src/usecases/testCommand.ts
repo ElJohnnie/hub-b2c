@@ -16,12 +16,11 @@ export const testCommandUseCase = () => {
             errorOutput += data.toString();
         });
 
-        process.on('close', (code) => {
-            if (code !== 0) {
-                reject(errorOutput);
-            } else {
-                resolve(output);
-            }
+        process.on('error', (err) => {
+            reject(`Erro ao abrir o terminal: ${err}`);
         });
+
+        resolve('Terminal aberto com o comando.');
     });
 };
+
