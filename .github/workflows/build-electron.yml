@@ -56,14 +56,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Upload Windows package to GitHub Packages
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-            -H "Content-Type: application/zip" \
-            --data-binary "@windows-${VERSION}.zip" \
-            "https://uploads.github.com/repos/ElJohnnie/hub-b2c/packages/zip?name=windows-${VERSION}.zip"
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: 'Release notes for v${{ github.run_number }}'
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Upload Windows package to GitHub Releases
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: windows-$(node -p "require('./package.json').version").zip
+          asset_name: windows-$(node -p "require('./package.json').version").zip
+          asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -118,13 +129,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Upload Ubuntu package to GitHub Packages
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
-            -H "Content-Type: application/zip" \
-            --data-binary "@ubuntu-${VERSION}.zip" \
-            "https://uploads.github.com/repos/ElJohnnie/hub-b2c/packages/zip?name=ubuntu-${VERSION}.zip"
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: 'Release notes for v${{ github.run_number }}'
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Upload Ubuntu package to GitHub Releases
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ubuntu-$(node -p "require('./package.json').version").zip
+          asset_name: ubuntu-$(node -p "require('./package.json').version").zip
+          asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
