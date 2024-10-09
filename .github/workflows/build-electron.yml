@@ -1,45 +1,16 @@
 name: Build Electron Package
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
 
 jobs:
-  update-version:
-    runs-on: ubuntu-latest
-
-    outputs:
-      version: ${{ steps.extract-version.outputs.version }}
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.10.0'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Bump version
-        run: |
-          NEW_VERSION=$(npm version patch --no-git-tag-version) # Incrementa a versão (patch level)
-          echo "::set-output name=version::${NEW_VERSION}"
-
-      - name: Commit new version
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add package.json
-          git commit -m "Bump version to ${{ steps.extract-version.outputs.version }}"
-          git push
-
   build-windows:
     runs-on: windows-latest
-    needs: update-version
 
     steps:
       - name: Check out repository
@@ -53,28 +24,43 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build App for Ubuntu
+      - name: Bump version for Windows
+        id: extract-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(echo $VERSION | awk -F. '{$NF+=1; OFS="."; print $0}')
+          echo "New version: $NEW_VERSION"
+          npm version $NEW_VERSION --no-git-tag-version
+          echo "::set-output name=version::$NEW_VERSION"
+
+      - name: Build Electron App for Windows
         run: npm run build
 
-      - name: Build Electron App for Ubuntu
-        run: npm run package
-
-      - name: Zip the Windows build
-        run: |
-          VERSION=${{ needs.update-version.outputs.version }}
-          powershell Compress-Archive -Path dist/* -DestinationPath dist/windows-${VERSION}.zip
+      - name: Zip Windows package
+        run: zip -r windows-${{ steps.extract-version.outputs.version }}.zip dist/
 
       - name: Upload Windows package to GitHub Releases
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: dist/windows-${{ needs.update-version.outputs.version }}.zip
-          asset_name: windows-${{ needs.update-version.outputs.version }}.zip
+          asset_path: windows-${{ steps.extract-version.outputs.version }}.zip
+          asset_name: windows-${{ steps.extract-version.outputs.version }}.zip
           asset_content_type: application/zip
+
+      - name: Commit new version for Windows
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json
+          git commit -m "Bump version to ${{ steps.extract-version.outputs.version }}"
+
+      - name: Push changes back to repository
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-ubuntu:
     runs-on: ubuntu-latest
-    needs: update-version
 
     steps:
       - name: Check out repository
@@ -91,21 +77,37 @@ jobs:
       - name: Install required packages for Linux build
         run: sudo apt-get update && sudo apt-get install -y fakeroot rpm 
 
-      - name: Build App for Ubuntu
-        run: npm run build
+      - name: Bump version for Ubuntu
+        id: extract-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          NEW_VERSION=$(echo $VERSION | awk -F. '{$NF+=1; OFS="."; print $0}')
+          echo "New version: $NEW_VERSION"
+          npm version $NEW_VERSION --no-git-tag-version
+          echo "::set-output name=version::$NEW_VERSION"
 
       - name: Build Electron App for Ubuntu
-        run: npm run package
+        run: npm run build
 
-      - name: Zip the Linux build
-        run: |
-          VERSION=${{ needs.update-version.outputs.version }}
-          zip -r dist/ubuntu-${VERSION}.zip dist/*
+      - name: Zip Ubuntu package
+        run: zip -r ubuntu-${{ steps.extract-version.outputs.version }}.zip dist/
 
-      - name: Upload Linux package to GitHub Releases
+      - name: Upload Ubuntu package to GitHub Releases
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: dist/ubuntu-${{ needs.update-version.outputs.version }}.zip
-          asset_name: ubuntu-${{ needs.update-version.outputs.version }}.zip
+          asset_path: ubuntu-${{ steps.extract-version.outputs.version }}.zip
+          asset_name: ubuntu-${{ steps.extract-version.outputs.version }}.zip
           asset_content_type: application/zip
+
+      - name: Commit new version for Ubuntu
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json
+          git commit -m "Bump version to ${{ steps.extract-version.outputs.version }}"
+
+      - name: Push changes back to repository
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
