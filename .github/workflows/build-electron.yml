@@ -69,12 +69,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Windows package to GitHub Releases
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: windows-$(node -p "require('./package.json').version").zip
-          asset_name: windows-$(node -p "require('./package.json').version").zip
-          asset_content_type: application/zip
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          --data-binary @"windows-${VERSION}.zip" \
+          -H "Content-Type: application/zip" \
+          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=windows-${VERSION}.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -142,11 +142,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Ubuntu package to GitHub Releases
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ubuntu-$(node -p "require('./package.json').version").zip
-          asset_name: ubuntu-$(node -p "require('./package.json').version").zip
-          asset_content_type: application/zip
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          curl -L -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          --data-binary @"ubuntu-${VERSION}.zip" \
+          -H "Content-Type: application/zip" \
+          "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=ubuntu-${VERSION}.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
