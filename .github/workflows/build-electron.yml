@@ -42,7 +42,7 @@ jobs:
           git commit -m "Bump version to ${{ env.version }}"
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Usando o token do seu PAT
 
   build-windows:
     runs-on: windows-latest
@@ -87,7 +87,7 @@ jobs:
           asset_name: windows-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Passando o token como GH_TOKEN
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Usando o token do seu PAT
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -135,4 +135,4 @@ jobs:
           asset_name: ubuntu-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Passando o token como GH_TOKEN
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Usando o token do seu PAT
