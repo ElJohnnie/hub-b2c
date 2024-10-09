@@ -21,7 +21,7 @@ jobs:
 
       - name: Set GH_TOKEN for Windows
         run: |
-          [Environment]::SetEnvironmentVariable("GH_TOKEN", "${{ secrets.GH_TOKEN }}", "User")
+          [System.Environment]::SetEnvironmentVariable('GH_TOKEN', '${{ secrets.GH_TOKEN }}', 'User')
         shell: pwsh
 
       - name: Install root dependencies
@@ -52,10 +52,8 @@ jobs:
           body: 'Release notes for v${{ github.run_number }}'
           draft: false
           prerelease: false
-          token: ${{ secrets.GH_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Aqui, o token correto para autenticação
 
       - name: Upload Windows package to GitHub Releases
         uses: actions/upload-release-asset@v1
@@ -64,9 +62,8 @@ jobs:
           asset_path: windows-$(node -p "require('./package.json').version").zip
           asset_name: windows-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
-          token: ${{ secrets.GH_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Usando o GITHUB_TOKEN que já está disponível
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -115,9 +112,8 @@ jobs:
           body: 'Release notes for v${{ github.run_number }}'
           draft: false
           prerelease: false
-          token: ${{ secrets.GH_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Usar o token aqui também
 
       - name: Upload Ubuntu package to GitHub Releases
         uses: actions/upload-release-asset@v1
@@ -126,6 +122,5 @@ jobs:
           asset_path: ubuntu-$(node -p "require('./package.json').version").zip
           asset_name: ubuntu-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
-          token: ${{ secrets.GH_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Usar o token aqui também
