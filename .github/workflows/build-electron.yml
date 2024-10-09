@@ -20,8 +20,9 @@ jobs:
           node-version: '18.10.0'
 
       - name: Set GH_TOKEN for Windows
-        run: echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $env:GITHUB_ENV
-        shell: cmd
+        run: |
+          [Environment]::SetEnvironmentVariable("GH_TOKEN", "${{ secrets.GH_TOKEN }}", "User")
+        shell: pwsh
 
       - name: Install root dependencies
         run: npm install 
@@ -51,9 +52,10 @@ jobs:
           body: 'Release notes for v${{ github.run_number }}'
           draft: false
           prerelease: false
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        
 
       - name: Upload Windows package to GitHub Releases
         uses: actions/upload-release-asset@v1
@@ -62,7 +64,7 @@ jobs:
           asset_path: windows-$(node -p "require('./package.json').version").zip
           asset_name: windows-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -113,7 +115,7 @@ jobs:
           body: 'Release notes for v${{ github.run_number }}'
           draft: false
           prerelease: false
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -124,6 +126,6 @@ jobs:
           asset_path: ubuntu-$(node -p "require('./package.json').version").zip
           asset_name: ubuntu-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
