@@ -25,7 +25,7 @@ export const executeShellCommandUseCase = async (body: { dir: string; command: s
         });
     } else if (os.platform() === 'linux') {
         const terminalCommand = 'xterm';
-        const terminalArgs = ['-hold', '-e', fullCommand];
+        const terminalArgs = ['-e', fullCommand];
 
         const process = spawn(terminalCommand, terminalArgs, { detached: true });
         return new Promise<string>((resolve, reject) => {

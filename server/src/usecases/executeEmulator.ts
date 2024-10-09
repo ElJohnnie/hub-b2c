@@ -1,8 +1,11 @@
 import { spawn } from 'child_process';
 import os from 'os';
+import path from 'path';
 
 export const executeEmulatorUseCase = async (body: { command: string }) => {
     const { command } = body;
+
+    console.log(`Comando: ${command}`);
 
     if (os.platform() === 'win32') {
         const terminalCommand = 'cmd.exe';
@@ -17,11 +20,12 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
         });
     } else if (os.platform() === 'linux') {
         const terminalCommand = 'xterm';
-        const terminalArgs = ['-hold', '-e', command];
+        const terminalArgs = ['-e', command];
 
         const process = spawn(terminalCommand, terminalArgs, { detached: true });
         return new Promise<string>((resolve, reject) => {
             process.on('error', (err) => {
+                console.log('Erro ao abrir o terminal: ', err);
                 reject(`Erro ao abrir o terminal: ${err}`);
             });
             resolve('AVD aberto com o comando no Linux.');
@@ -33,35 +37,49 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
 
 
 export const getEmulatorListUseCase = () => {
+    const scriptPath = path.join(__dirname, '../../src/scripts');
+
     if (os.platform() === "win32") {
-        const bashRun = spawn("/bin/bash", ["../scripts/getAdvs.bat"]);
-		return new Promise<string>((resolve, reject) => {
-                bashRun.on("error", (err) => {
-                reject(`Erro ao abrir o terminal: ${err}`);
-			});
-                bashRun.stderr.on("data", (err) => {
+        const emulatorBatPath = path.join(scriptPath, 'getAdvs.bat'); 
+        const bashRun = spawn('cmd.exe', ['/c', emulatorBatPath]);
+
+        return new Promise<string>((resolve, reject) => {
+            let output = '';
+            bashRun.stdout.on("data", (data) => {
+                output += data.toString();
+            });
+            bashRun.stderr.on("data", (err) => {
                 reject(`Erro ao capturar os dados: ${err}`);
-			});
-			bashRun.stdout.on("data", (data) => {
-                resolve(data);
-                console.log("stdout: ${data}");
-			});
-		});
+            });
+            bashRun.on("close", (code) => {
+                if (code === 0) {
+                    resolve(output);
+                } else {
+                    reject(`Processo terminou com código: ${code}`);
+                }
+            });
+        });
     } else if (os.platform() === "linux") {
-		const bashRun = spawn("bash", ["../scripts/getAdvs.bat"]);
-		return new Promise<string>((resolve, reject) => {
-                bashRun.on("error", (err) => {
-                reject(`Erro ao abrir o terminal: ${err}`);
-			});
-                bashRun.stderr.on("data", (err) => {
+        const emulatorShPath = path.join(scriptPath, 'getAdvs.sh');
+        const process = spawn('bash', [emulatorShPath]);
+
+        return new Promise<string>((resolve, reject) => {
+            let output = '';
+            process.stdout.on("data", (data) => {
+                output += data.toString();
+            });
+            process.stderr.on("data", (err) => {
                 reject(`Erro ao capturar os dados: ${err}`);
-			});
-                bashRun.stdout.on("data", (data) => {
-                resolve(data);
-                console.log("stdout: ${data}");
-			});
-		});
+            });
+            process.on("close", (code) => {
+                if (code === 0) {
+                    resolve(output);
+                } else {
+                    reject(`Processo terminou com código: ${code}`);
+                }
+            });
+        });
     }
-  
+
     throw new Error("Sistema operacional não suportado");
 };

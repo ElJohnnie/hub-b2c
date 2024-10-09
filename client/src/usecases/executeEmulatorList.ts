@@ -1,18 +1,18 @@
 import { CommandGateway } from '../gateways/commandGateway';
 
-export class ExecuteEmulatorUseCase {
+export class ExecuteEmulatorListUseCase {
   private commandGateway: CommandGateway;
 
   constructor(commandGateway: CommandGateway) {
     this.commandGateway = commandGateway;
   }
 
-  async executeEmulator(command: string): Promise<string> {
+  async executeEmulatorList(): Promise<string> {
     try {
-      const result = await this.commandGateway.executeEmulator(command);
+      const result = await this.commandGateway.getAVDsCommand();
       return result;
-    } catch {
-      throw new Error('Erro ao iniciar emulador');
+    } catch(err) {
+      return String(err);
     }
   }
 
