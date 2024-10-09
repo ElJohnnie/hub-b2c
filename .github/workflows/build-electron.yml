@@ -19,29 +19,34 @@ jobs:
         with:
           node-version: '18.10.0'
 
-      - name: Set GH_TOKEN for Windows
-        run: |
-          [System.Environment]::SetEnvironmentVariable('GH_TOKEN', '${{ secrets.GH_TOKEN }}', 'User')
-        shell: pwsh
-
       - name: Install root dependencies
         run: npm install 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Install dependencies for client (frontend)
         run: |
           cd client
           npm install --legacy-peer-deps
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Install dependencies for server (backend)
         run: |
           cd server
           npm install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build App for Windows
         run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Zip Windows package
         run: zip -r windows-$(node -p "require('./package.json').version").zip dist/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Create GitHub Release
         id: create_release
@@ -53,7 +58,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Aqui, o token correto para autenticação
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Windows package to GitHub Releases
         uses: actions/upload-release-asset@v1
@@ -63,7 +68,7 @@ jobs:
           asset_name: windows-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Usando o GITHUB_TOKEN que já está disponível
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -78,30 +83,41 @@ jobs:
           node-version: '18.10.0'
 
       - name: Set GH_TOKEN for Ubuntu
-        run: |
-          echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+        run: echo "GITHUB_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
 
       - name: Install root dependencies
         run: npm install  
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Install dependencies for client (frontend)
         run: |
           cd client
           npm install --legacy-peer-deps
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Install dependencies for server (backend)
         run: |
           cd server
           npm install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Install required packages for Linux build
         run: sudo apt-get update && sudo apt-get install -y fakeroot rpm 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build App for Ubuntu
         run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Zip Ubuntu package
         run: zip -r ubuntu-$(node -p "require('./package.json').version").zip dist/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Create GitHub Release
         id: create_release
@@ -113,7 +129,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Usar o token aqui também
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Ubuntu package to GitHub Releases
         uses: actions/upload-release-asset@v1
@@ -123,4 +139,4 @@ jobs:
           asset_name: ubuntu-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Usar o token aqui também
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

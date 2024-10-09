@@ -37,7 +37,7 @@
           "provider": "github",
           "owner": "ElJohnnie",
           "repo": "hub-b2c",
-          "token": "${GITHUB_TOKEN}"
+          "token": ""
         }
       ]
     },
@@ -48,7 +48,7 @@
           "provider": "github",
           "owner": "ElJohnnie",
           "repo": "hub-b2c",
-          "token": "${GITHUB_TOKEN}"
+          "token": ""
         }
       ]
     },
@@ -62,7 +62,7 @@
           "provider": "github",
           "owner": "ElJohnnie",
           "repo": "hub-b2c",
-          "token": "${GITHUB_TOKEN}"
+          "token": ""
         }
       ]
     }
