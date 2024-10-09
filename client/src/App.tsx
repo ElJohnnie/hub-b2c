@@ -21,7 +21,7 @@ const App: React.FC = () => {
         shell
       );
       setOutput(result);
-    } catch (error) {
+    } catch {
       setOutput('Erro ao executar comando');
     }
   };
@@ -30,7 +30,7 @@ const App: React.FC = () => {
     try {
       const result = await commandController.executeShellCommand(dir, command);
       setOutput(result);
-    } catch (error) {
+    } catch {
       setOutput('Erro ao executar shell command');
     }
   };
@@ -39,7 +39,7 @@ const App: React.FC = () => {
     try {
       const result = await commandController.executeEmulator(command);
       setOutput(result);
-    } catch (error) {
+    } catch {
       setOutput('Erro ao iniciar emulador');
     }
   };
