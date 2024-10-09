@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Hub B2C",
   "main": "src/main.js",
-  "homepage": "https://github.com/ElJohnnie/hub-b2c",
+  "homepage": "./",
   "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
   "license": "ISC",
   "scripts": {
