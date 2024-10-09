@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies for client (frontend)
         run: |
           cd client
-          npm install
+          npm install --legacy-peer-deps
 
       # Instalar dependências do backend (server)
       - name: Install dependencies for server (backend)
@@ -67,7 +67,7 @@ jobs:
       - name: Install dependencies for client (frontend)
         run: |
           cd client
-          npm install
+          npm install --legacy-peer-deps
 
       # Instalar dependências do backend (server)
       - name: Install dependencies for server (backend)
