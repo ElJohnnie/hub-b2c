@@ -57,7 +57,7 @@ jobs:
           node-version: '18.10.0'
 
       # Instalar dependências na raiz
-      - name: Install dependencies for client (frontend)
+      - name: Install root dependencies
         run: |
           npm install 
 
@@ -76,9 +76,6 @@ jobs:
       - name: Build App for Windows
         run: npm run build
 
-      - name: Build Electron App for Windows
-        run: npm run package
-
       - name: Zip Windows package
         run: zip -r windows-$(node -p "require('./package.json').version").zip dist/
 
@@ -89,6 +86,8 @@ jobs:
           asset_path: windows-$(node -p "require('./package.json').version").zip
           asset_name: windows-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Adiciona o GH_TOKEN aqui
 
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -103,10 +102,10 @@ jobs:
           node-version: '18.10.0'
 
       # Instalar dependências na raiz
-      - name: Install dependencies for client (frontend)
+      - name: Install root dependencies
         run: |
-          npm install 
-          
+          npm install  
+
       # Instalar dependências do frontend (client)
       - name: Install dependencies for client (frontend)
         run: |
@@ -125,9 +124,6 @@ jobs:
       - name: Build App for Ubuntu
         run: npm run build
 
-      - name: Build Electron App for Ubuntu
-        run: npm run package
-
       - name: Zip Ubuntu package
         run: zip -r ubuntu-$(node -p "require('./package.json').version").zip dist/
 
@@ -138,3 +134,5 @@ jobs:
           asset_path: ubuntu-$(node -p "require('./package.json').version").zip
           asset_name: ubuntu-$(node -p "require('./package.json').version").zip
           asset_content_type: application/zip
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Adiciona o GH_TOKEN aqui
