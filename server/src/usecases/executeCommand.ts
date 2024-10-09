@@ -23,7 +23,7 @@ export const executeCommandUseCase = async (body: { dir: string; command: string
         });
 
         process.on('error', (err) => {
-            reject(`Erro ao abrir o terminal: ${err}`);
+            reject(`Erro ao receber o comando: ${err}`);
         });
 
         resolve(`Comando recebido com sucesso`);

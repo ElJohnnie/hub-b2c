@@ -44,6 +44,15 @@ const App: React.FC = () => {
     }
   };
 
+  const handleGetEmulator = async () => {
+    try {
+      const result = await commandController.executeEmulatorList();
+      setOutput(result);
+    } catch(err) {
+      setOutput(String(err));
+    }
+  };
+
   return (
     <div className='bg-gray-100 p-8'>
       <NavBar />
@@ -65,7 +74,7 @@ const App: React.FC = () => {
           />
           <Button
             label='Comando de teste'
-            onClick={() => handleExecuteShellCommand('test', '')}
+            onClick={() => handleGetEmulator()}
           />
         </div>
 
