@@ -14,12 +14,18 @@ export const executeCommandUseCase = async (body: { dir: string; command: string
     console.log(`Shell: ${shell}`);
 
     return new Promise<string>((resolve, reject) => {
-        exec(fullCommand, { shell: shell || '/bin/bash' }, (error, stdout, stderr) => {
+        const process = exec(fullCommand, { shell: shell || '/bin/bash' }, (error, stdout, stderr) => {
             if (error) {
                 reject(`Erro: ${stderr}, ${error}`);
             } else {
                 resolve(stdout);
             }
         });
+
+        process.on('error', (err) => {
+            reject(`Erro ao abrir o terminal: ${err}`);
+        });
+
+        resolve(`Comando recebido com sucesso`);
     });
 };

@@ -7,6 +7,7 @@ import { testCommandUseCase } from '../usecases/testCommand';
 export const executeCommand = async (req: Request, res: Response) => {
     try {
         const result = await executeCommandUseCase(req.body);
+        console.log(result);
         res.json({ output: result });
     } catch (error) {
         res.status(500).json({ error: (error as Error).message });

@@ -21,13 +21,7 @@ export const executeShellCommandUseCase = async (body: { dir: string; command: s
             process.on('error', (err) => {
                 reject(`Erro ao abrir o terminal: ${err}`);
             });
-            process.on('close', (code) => {
-                if (code === 127) {
-                    reject('Erro: Comando não encontrado.');
-                } else {
-                    resolve('Terminal aberto com o comando no Windows.');
-                }
-            });
+            resolve('Terminal aberto com o comando no Windows.');
         });
     } else if (os.platform() === 'linux') {
         const terminalCommand = 'xterm';
@@ -38,13 +32,7 @@ export const executeShellCommandUseCase = async (body: { dir: string; command: s
             process.on('error', (err) => {
                 reject(`Erro ao abrir o terminal: ${err}`);
             });
-            process.on('close', (code) => {
-                if (code === 127) {
-                    reject('Erro: Comando não encontrado.');
-                } else {
-                    resolve('Terminal aberto com o comando no Linux.');
-                }
-            });
+            resolve('Terminal aberto com o comando no Linux.');
         });
     } else {
         throw new Error('Sistema operacional não suportado');
