@@ -10,7 +10,7 @@ if not exist "%USERPROFILE%\AppData\Local\Android\Sdk\emulator\" (
 )
 
 REM Executa o comando para listar os AVDs
-for /f "tokens=* delims=" %%i in ('emulator -list-avds ^| findstr /v "INFO"') do (
+for /f "tokens=* delims=\" %%i in ('emulator -list-avds ^| findstr /v "INFO"') do (
     set avd_found=true
     echo %%i
 )
@@ -18,5 +18,6 @@ for /f "tokens=* delims=" %%i in ('emulator -list-avds ^| findstr /v "INFO"') do
 REM Verifica se algum AVD foi encontrado
 if not defined avd_found (
     echo "Nenhum AVD encontrado."
-) 
+)
+
 exit /b

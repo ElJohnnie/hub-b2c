@@ -74,14 +74,13 @@ export class CommandGateway {
     return data.output || 'Erro na resposta';
   }
 
-  async getAVDsCommand(): Promise<string> {
+  async getAVDsCommand(): Promise<string[]> {
     const response = await fetch('http://localhost:5000/execute-emulator-list', {
       method: 'GET',
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Erro ao executar comando de teste');
+      throw new Error('Erro ao executar comando de teste');
     }
 
     const data = await response.json();

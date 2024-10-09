@@ -1,4 +1,4 @@
-import { CommandGateway } from '../gateways/commandGateway';
+import { CommandGateway } from "../gateways/commandGateway";
 
 export class ExecuteEmulatorListUseCase {
   private commandGateway: CommandGateway;
@@ -7,13 +7,13 @@ export class ExecuteEmulatorListUseCase {
     this.commandGateway = commandGateway;
   }
 
-  async executeEmulatorList(): Promise<string> {
+  async executeEmulatorList(): Promise<string[]> {
     try {
       const result = await this.commandGateway.getAVDsCommand();
       return result;
-    } catch(err) {
-      return String(err);
+    } catch (err) {
+      if (err) throw new Error("Erro ao executar comando", err);
+      throw new Error("Erro ao executar comando");
     }
   }
-
 }

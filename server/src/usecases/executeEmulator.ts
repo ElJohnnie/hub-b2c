@@ -37,7 +37,6 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
 
 export const getEmulatorListUseCase = () => {
   const scriptPath = path.join(__dirname, "../../src/scripts");
-  console.log("Entrou no getEmulatorList");
   if (os.platform() === "win32") {
     const emulatorBatPath = path.join(scriptPath, "getAdvs.bat");
     const bashRun = spawn("cmd.exe", ["/c", emulatorBatPath]);
@@ -45,8 +44,7 @@ export const getEmulatorListUseCase = () => {
     return new Promise<string | string[]>((resolve, reject) => {
       const output: string[] = [];
       bashRun.stdout.on("data", (data) => {
-        console.log("DATA", data.toString());
-        output.push(data.toString());
+        output.push(data.toString().split("\r\n")[0]);
       });
       bashRun.stderr.on("data", (err) => {
         reject(`Erro ao capturar os dados: ${err}`);
