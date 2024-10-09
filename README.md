@@ -17,7 +17,7 @@ A aplicação combina um back-end robusto utilizando **Express.js** com uma inte
 
 Antes de iniciar a instalação do projeto, você precisará ter as seguintes ferramentas instaladas no seu sistema:
 
-- [Node.js](https://nodejs.org/) (versão 14+)
+- [Node.js](https://nodejs.org/) (versão 18.10+)
 - [npm](https://www.npmjs.com/)
 - [Electron](https://www.electronjs.org/)
 - [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads): A aplicação utiliza o ChromeDriver para algumas funcionalidades, como testes ou interação com o navegador, e precisa estar instalado e configurado corretamente. Você pode baixar o ChromeDriver e adicioná-lo ao seu PATH.
