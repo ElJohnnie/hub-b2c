@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-windows:
-    # if: ${{ github.event.inputs.build-windows == 'yes' }}
+    if: ${{ github.event.inputs.build-windows == 'yes' }}
     runs-on: windows-latest
 
     steps:
@@ -52,7 +52,7 @@ jobs:
       - name: Zip Windows package (from dist folder)
         run: |
           $VERSION = (node -p "require('./package.json').version")
-          Compress-Archive -Path dist/* -DestinationPath "windows-$VERSION.zip"
+          Compress-Archive -Path ./dist/* -DestinationPath "windows-$VERSION.zip"
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
         id: create_release_windows
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ github.sha }}
+          tag_name: v${{ github.sha }}  # Use SHA as tag_name to ensure consistency
           release_name: Release ${{ github.sha }}
           body: 'Release notes for Windows version ${{ github.sha }}'
           draft: false
@@ -130,7 +130,7 @@ jobs:
       - name: Zip Ubuntu package (from dist folder)
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          zip -r "ubuntu-$VERSION.zip" dist/
+          zip -r "ubuntu-$VERSION.zip" dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
@@ -145,7 +145,7 @@ jobs:
         id: create_release_ubuntu
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ github.sha }}
+          tag_name: v${{ github.sha }}  # Use SHA as tag_name to ensure consistency
           release_name: Release ${{ github.sha }}
           body: 'Release notes for Ubuntu version ${{ github.sha }}'
           draft: false
