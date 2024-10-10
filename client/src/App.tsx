@@ -36,6 +36,7 @@ const App: React.FC = () => {
   };
 
   const handleExecuteShellCommand = async (dir: string, command: string) => {
+    console.log(dir, command);
     try {
       const result = await commandController.executeShellCommand(dir, command);
       setOutput(result);
@@ -99,7 +100,7 @@ const App: React.FC = () => {
               <BoxedRow
                 title=""
                 description={"Tagueamentos"}
-                onPress={() => () =>
+                onPress={() =>
                   handleExecuteShellCommand("scripts", "tracking.sh")
                 }
               />
