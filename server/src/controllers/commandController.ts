@@ -25,7 +25,6 @@ export const executeEmulator = async (req: Request, res: Response) => {
 };
 
 export const executeGetEmulatorList = async (req: Request, res: Response) => {
-    console.log("ENTROU NO EXECUTE")
     try {
         const result = await getEmulatorListUseCase();
         res.json({ output: result });

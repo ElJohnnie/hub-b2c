@@ -35,23 +35,23 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
   }
 };
 
-export const getEmulatorListUseCase = () => {
+export const getEmulatorListUseCase = (): Promise<string[]> => {
   const scriptPath = path.join(__dirname, "../../src/scripts");
   if (os.platform() === "win32") {
     const emulatorBatPath = path.join(scriptPath, "getAdvs.bat");
     const bashRun = spawn("cmd.exe", ["/c", emulatorBatPath]);
 
-    return new Promise<string | string[]>((resolve, reject) => {
-      const output: string[] = [];
+    return new Promise<string[]>((resolve, reject) => {
+      let output = "";
       bashRun.stdout.on("data", (data) => {
-        output.push(data.toString().split("\r\n")[0]);
+        output += data.toString();
       });
       bashRun.stderr.on("data", (err) => {
         reject(`Erro ao capturar os dados: ${err}`);
       });
       bashRun.on("close", (code) => {
         if (code === 0) {
-          resolve(output);
+          resolve(output.split("\n").filter((item) => item));
         } else {
           reject(`Processo terminou com código: ${code}`);
         }
@@ -61,7 +61,7 @@ export const getEmulatorListUseCase = () => {
     const emulatorShPath = path.join(scriptPath, "getAdvs.sh");
     const process = spawn("bash", [emulatorShPath]);
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string[]>((resolve, reject) => {
       let output = "";
       process.stdout.on("data", (data) => {
         output += data.toString();
@@ -71,7 +71,7 @@ export const getEmulatorListUseCase = () => {
       });
       process.on("close", (code) => {
         if (code === 0) {
-          resolve(output);
+          resolve(output.split("\n").filter((item) => item));
         } else {
           reject(`Processo terminou com código: ${code}`);
         }
