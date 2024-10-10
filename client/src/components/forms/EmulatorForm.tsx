@@ -1,69 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { detectOS } from "../../utils/detect-os";
+import {
+  Select,
+  Form,
+  FixedFooterLayout,
+  ButtonPrimary,
+  Box,
+} from "@telefonica/mistica";
 
 interface EmulatorFormProps {
   onSubmit: (command: string) => void;
+  avdsList: string[];
 }
 
-export default function EmulatorForm({ onSubmit }: EmulatorFormProps) {
-  const [avdName, setAvdName] = useState<string>('');
-  const [gpuOption, setGpuOption] = useState<string>('off');
+export default function EmulatorForm({
+  onSubmit,
+  avdsList,
+}: EmulatorFormProps) {
+  const [avdName, setAvdName] = useState<string>("");
+  const [gpuOption, setGpuOption] = useState<string>("");
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const command = `~/Android/Sdk/emulator/emulator -avd ${avdName} -gpu ${gpuOption}`;
+  const handleSubmit = (): void => {
+    let command = "";
+    const os = detectOS();
+    if (os === "Windows") {
+      command = `%USERPROFILE%\\AppData\\Local\\Android\\Sdk\\emulator\\emulator -avd ${avdName} -gpu ${gpuOption}`;
+    }
+    if (os === "Linux") {
+      command = `~/Android/Sdk/emulator/emulator -avd ${avdName} -gpu ${gpuOption}`;
+    }
 
     onSubmit(command);
   };
 
+  // return (
+  // <Form
+  //   initialValues={{
+  //     avdName: "",
+  //   }}
+  //   onSubmit={() => {}}
+  //   autoJump
+  // >
+  //   <Select name="country" label="country" options={avdsListUsage} />
+  // </Form>
+  // );
   return (
-    <form
-      className='bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto'
+    <Form
+      className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto"
       onSubmit={handleSubmit}
     >
-      <h2 className='text-2xl font-bold text-purple-900 mb-4'>
-        Iniciar Emulador Android
-      </h2>
-      <label
-        className='block text-purple-800 text-sm font-medium mb-2'
-        htmlFor='avdName'
+      <FixedFooterLayout
+        footer={
+          <Box padding={16}>
+            <ButtonPrimary submit>Aceitar</ButtonPrimary>
+          </Box>
+        }
       >
-        Nome do AVD (Emulador):
-      </label>
-      <input
-        type='text'
-        id='avdName'
-        name='avdName'
-        value={avdName}
-        onChange={(e) => setAvdName(e.target.value)}
-        required
-        placeholder='Digite o nome do AVD'
-        className='w-full p-2 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none'
-      />
-
-      <label
-        className='block text-purple-800 text-sm font-medium mb-2'
-        htmlFor='gpuOption'
-      >
-        Ativar GPU:
-      </label>
-      <select
-        id='gpuOption'
-        name='gpuOption'
-        value={gpuOption}
-        onChange={(e) => setGpuOption(e.target.value)}
-        className='w-full p-2 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none'
-      >
-        <option value='off'>Desativado</option>
-        <option value='on'>Ativado</option>
-      </select>
-
-      <button
-        type='submit'
-        className='bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-2 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 w-full'
-      >
-        Iniciar Emulador
-      </button>
-    </form>
+        <Box padding={2}>
+          <Select
+            id="avdSelect"
+            name="avdSelect"
+            value={avdName}
+            onChangeValue={setAvdName}
+            options={avdsList.map((avd) => ({
+              value: avd,
+              text: avd,
+            }))}
+            label={"Dispositivos virtuais criados"}
+          />
+        </Box>
+        <Box padding={2} paddingTop={16}>
+          <Select
+            id="gpuOption"
+            name="gpuOption"
+            value={gpuOption}
+            onChangeValue={setGpuOption}
+            options={[
+              { value: "off", text: "Desativado" },
+              { value: "on", text: "Ativado" },
+            ]}
+            label={"Ativar GPU"}
+          />
+        </Box>
+      </FixedFooterLayout>
+    </Form>
   );
 }

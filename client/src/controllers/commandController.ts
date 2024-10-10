@@ -1,17 +1,19 @@
-import { ExecuteCommandUseCase } from '../usecases/executeCommand';
-import { ExecuteShellCommandUseCase } from '../usecases/executeShellCommand';
-import { ExecuteEmulatorUseCase } from '../usecases/executeEmulator';
-import { CommandGateway } from '../gateways/commandGateway';
-import { ExecuteEmulatorListUseCase } from '../usecases/executeEmulatorList';
+import { ExecuteCommandUseCase } from "../usecases/executeCommand";
+import { ExecuteShellCommandUseCase } from "../usecases/executeShellCommand";
+import { ExecuteEmulatorUseCase } from "../usecases/executeEmulator";
+import { CommandGateway } from "../gateways/commandGateway";
+import { ExecuteEmulatorListUseCase } from "../usecases/executeEmulatorList";
 
 const executeCommandUseCase = new ExecuteCommandUseCase(new CommandGateway());
 
 const executeShellCommandUseCase = new ExecuteShellCommandUseCase(
-  new CommandGateway()
+  new CommandGateway(),
 );
 const executeEmulatorUseCase = new ExecuteEmulatorUseCase(new CommandGateway());
 
-const executeEmulatorListUseCase = new ExecuteEmulatorListUseCase(new CommandGateway());
+const executeEmulatorListUseCase = new ExecuteEmulatorListUseCase(
+  new CommandGateway(),
+);
 
 export const commandController = {
   async executeCommand(dir: string, command: string, shell: string) {
@@ -19,11 +21,11 @@ export const commandController = {
       const output = await executeCommandUseCase.executeCommand(
         dir,
         command,
-        shell
+        shell,
       );
       return output;
     } catch (error: unknown) {
-      throw new Error((error as Error).message || 'Erro ao executar comando');
+      throw new Error((error as Error).message || "Erro ao executar comando");
     }
   },
 
@@ -31,11 +33,11 @@ export const commandController = {
     try {
       const output = await executeShellCommandUseCase.executeShellCommand(
         dir,
-        command
+        command,
       );
       return output;
     } catch (error: unknown) {
-      throw new Error((error as Error).message || 'Erro ao executar comando');
+      throw new Error((error as Error).message || "Erro ao executar comando");
     }
   },
 
@@ -44,16 +46,17 @@ export const commandController = {
       const output = await executeEmulatorUseCase.executeEmulator(command);
       return output;
     } catch (error: unknown) {
-      throw new Error((error as Error).message || 'Erro ao executar comando');
+      throw new Error((error as Error).message || "Erro ao executar comando");
     }
   },
 
-  async executeEmulatorList() {
+  async executeEmulatorList(): Promise<string[]> {
     try {
-      const output = await executeEmulatorListUseCase.executeEmulatorList();
+      const output: string[] =
+        await executeEmulatorListUseCase.executeEmulatorList();
       return output;
     } catch (error: unknown) {
-      throw new Error((error as Error).message || 'Erro ao executar comando');
+      throw new Error((error as Error).message || "Erro ao executar comando");
     }
   },
 };

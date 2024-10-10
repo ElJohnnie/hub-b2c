@@ -1,4 +1,4 @@
-import { CommandGateway } from '../gateways/commandGateway';
+import { CommandGateway } from "../gateways/commandGateway";
 
 export class ExecuteCommandUseCase {
   private commandGateway: CommandGateway;
@@ -10,17 +10,17 @@ export class ExecuteCommandUseCase {
   async executeCommand(
     dir: string,
     command: string,
-    shell: string
+    shell: string,
   ): Promise<string> {
     try {
       const result = await this.commandGateway.executeCommand(
         dir,
         command,
-        shell
+        shell,
       );
       return result;
     } catch (error) {
-      throw new Error('Erro ao executar comando');
+      throw new Error("Erro ao executar comando");
     }
   }
 }

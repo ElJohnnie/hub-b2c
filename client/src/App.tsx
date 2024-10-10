@@ -1,28 +1,37 @@
-import './styles/globals.css';
-import NavBar from './components/nav-bar/NavBar';
-import React, { useState } from 'react';
-import Button from './components/buttons/Button';
-import EmulatorForm from './components/forms/EmulatorForm';
-import Output from './components/core/Output';
-import { commandController } from './controllers/commandController';
+import "./styles/globals.css";
+import "@telefonica/mistica/css/mistica.css";
+import NavBar from "./components/nav-bar/NavBar";
+import React, { useEffect, useState } from "react";
+import EmulatorForm from "./components/forms/EmulatorForm";
+import { commandController } from "./controllers/commandController";
+import {
+  Callout,
+  Grid,
+  GridItem,
+  BoxedRowList,
+  BoxedRow,
+  ResponsiveLayout,
+  skinVars,
+  Text4,
+} from "@telefonica/mistica";
 
 const App: React.FC = () => {
-  const [output, setOutput] = useState<string>('');
-
+  const [output, setOutput] = useState<string>("");
+  const [avdList, setAvdList] = useState<string[]>([]);
   const handleExecuteCommand = async (
     dir: string,
     command: string,
-    shell: string
+    shell: string,
   ) => {
     try {
       const result = await commandController.executeCommand(
         dir,
         command,
-        shell
+        shell,
       );
       setOutput(result);
     } catch {
-      setOutput('Erro ao executar comando');
+      setOutput("Erro ao executar comando");
     }
   };
 
@@ -31,7 +40,7 @@ const App: React.FC = () => {
       const result = await commandController.executeShellCommand(dir, command);
       setOutput(result);
     } catch {
-      setOutput('Erro ao executar shell command');
+      setOutput("Erro ao executar shell command");
     }
   };
 
@@ -40,54 +49,78 @@ const App: React.FC = () => {
       const result = await commandController.executeEmulator(command);
       setOutput(result);
     } catch {
-      setOutput('Erro ao iniciar emulador');
+      setOutput("Erro ao iniciar emulador");
     }
   };
 
   const handleGetEmulator = async () => {
     try {
       const result = await commandController.executeEmulatorList();
-      setOutput(result);
-    } catch(err) {
+      setAvdList(result);
+    } catch (err) {
       setOutput(String(err));
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      await handleGetEmulator();
+    })();
+  }, []);
+
   return (
-    <div className='bg-gray-100 p-8'>
+    <ResponsiveLayout>
       <NavBar />
-      <div className='mx-auto bg-white p-6 rounded-lg shadow-lg'>
-        <div className='mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-          <Button
-            label='Kubernetes-b2c: Ubuntu'
-            onClick={() =>
-              handleExecuteCommand(
-                'webdriver/kubernetes-b2c',
-                'pip install -r requirements.txt && python3 kubernetes.py',
-                '/bin/bash'
-              )
-            }
-          />
-          <Button
-            label='Shell Tagueamento: Ubuntu'
-            onClick={() => handleExecuteShellCommand('scripts', 'tracking.sh')}
-          />
-          <Button
-            label='Listar Devices Android'
-            onClick={() => handleGetEmulator()}
-          />
-        </div>
-
-        <div className='mb-8'>
-          <h2 className='text-xl text-center font-semibold text-purple-800 mb-4'>
-            Iniciar Emulador Android
-          </h2>
-          <EmulatorForm onSubmit={handleExecuteEmulator} />
-        </div>
-
-        <Output output={output} />
+      <div className="mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <Grid columns={3} rows={1} gap={12}>
+          <GridItem>
+            <Text4 weight="regular" color={skinVars.colors.backgroundBrand}>
+              Janelas
+            </Text4>
+            <BoxedRowList>
+              <BoxedRow
+                title=""
+                description={"Dashboard Kubernetes"}
+                onPress={() =>
+                  handleExecuteCommand(
+                    "webdriver/kubernetes-b2c",
+                    "pip install -r requirements.txt && python3 kubernetes.py",
+                    "/bin/bash",
+                  )
+                }
+              />
+            </BoxedRowList>
+          </GridItem>
+          <GridItem>
+            <Text4 weight="regular" color={skinVars.colors.backgroundBrand}>
+              Terminais
+            </Text4>
+            <BoxedRowList>
+              <BoxedRow
+                title=""
+                description={"Tagueamentos"}
+                onPress={() => () =>
+                  handleExecuteShellCommand("scripts", "tracking.sh")
+                }
+              />
+            </BoxedRowList>
+          </GridItem>
+          <GridItem>
+            <Text4 weight="regular" color={skinVars.colors.backgroundBrand}>
+              Emulador
+            </Text4>
+            <BoxedRowList>
+              <EmulatorForm
+                onSubmit={handleExecuteEmulator}
+                avdsList={avdList}
+              />
+            </BoxedRowList>
+          </GridItem>
+        </Grid>
+        <div className="mb-8" />
+        <Callout description={output}></Callout>
       </div>
-    </div>
+    </ResponsiveLayout>
   );
 };
 
