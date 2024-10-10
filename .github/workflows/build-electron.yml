@@ -13,7 +13,6 @@ on:
 
 jobs:
   build-windows:
-    # if: ${{ github.event.inputs.build-windows == 'yes' }}
     runs-on: windows-latest
 
     steps:
@@ -56,12 +55,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Check if Windows zip exists and is not empty
-        run: |
-          if (!(Test-Path "windows-hub-b2c.zip") -or ((Get-Item "windows-hub-b2c.zip").length -eq 0)) {
-            Write-Error "Windows zip was not created or is empty!"
-          }
-        shell: pwsh
+      - name: Upload Windows ZIP as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-hub-b2c.zip
+          path: windows-hub-b2c.zip
 
   build-linux:
     runs-on: ubuntu-latest
@@ -110,12 +108,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Check if Ubuntu zip exists and is not empty
-        run: |
-          if [ ! -s "ubuntu-hub-b2c.zip" ]; then
-            echo "Ubuntu zip was not created or is empty!"
-            exit 1
-          fi
+      - name: Upload Ubuntu ZIP as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-hub-b2c.zip
+          path: ubuntu-hub-b2c.zip
 
   upload-release:
     needs: [build-windows, build-linux]
@@ -124,6 +121,16 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+
+      - name: Download Windows ZIP artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-hub-b2c.zip
+
+      - name: Download Ubuntu ZIP artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-hub-b2c.zip
 
       - name: Create or Update GitHub Release
         id: create_release
