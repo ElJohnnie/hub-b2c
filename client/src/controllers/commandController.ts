@@ -7,12 +7,12 @@ import { ExecuteEmulatorListUseCase } from "../usecases/executeEmulatorList";
 const executeCommandUseCase = new ExecuteCommandUseCase(new CommandGateway());
 
 const executeShellCommandUseCase = new ExecuteShellCommandUseCase(
-  new CommandGateway()
+  new CommandGateway(),
 );
 const executeEmulatorUseCase = new ExecuteEmulatorUseCase(new CommandGateway());
 
 const executeEmulatorListUseCase = new ExecuteEmulatorListUseCase(
-  new CommandGateway()
+  new CommandGateway(),
 );
 
 export const commandController = {
@@ -21,7 +21,7 @@ export const commandController = {
       const output = await executeCommandUseCase.executeCommand(
         dir,
         command,
-        shell
+        shell,
       );
       return output;
     } catch (error: unknown) {
@@ -33,7 +33,7 @@ export const commandController = {
     try {
       const output = await executeShellCommandUseCase.executeShellCommand(
         dir,
-        command
+        command,
       );
       return output;
     } catch (error: unknown) {

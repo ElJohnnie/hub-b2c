@@ -1,4 +1,4 @@
-import { CommandGateway } from '../gateways/commandGateway';
+import { CommandGateway } from "../gateways/commandGateway";
 
 export class ExecuteShellCommandUseCase {
   private commandGateway: CommandGateway;
@@ -11,11 +11,11 @@ export class ExecuteShellCommandUseCase {
     try {
       const result = await this.commandGateway.executeShellCommand(
         dir,
-        command
+        command,
       );
       return result;
     } catch (error) {
-      throw new Error('Erro ao executar shell command');
+      throw new Error("Erro ao executar shell command");
     }
   }
 }

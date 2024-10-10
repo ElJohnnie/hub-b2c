@@ -1,6 +1,12 @@
-import { ListboxOptions } from "@headlessui/react";
 import React, { useState } from "react";
 import { detectOS } from "../../utils/detect-os";
+import {
+  Select,
+  Form,
+  FixedFooterLayout,
+  ButtonPrimary,
+  Box,
+} from "@telefonica/mistica";
 
 interface EmulatorFormProps {
   onSubmit: (command: string) => void;
@@ -12,9 +18,9 @@ export default function EmulatorForm({
   avdsList,
 }: EmulatorFormProps) {
   const [avdName, setAvdName] = useState<string>("");
-  const [gpuOption, setGpuOption] = useState<string>("off");
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const [gpuOption, setGpuOption] = useState<string>("");
+
+  const handleSubmit = (): void => {
     let command = "";
     const os = detectOS();
     if (os === "Windows") {
@@ -39,52 +45,44 @@ export default function EmulatorForm({
   // </Form>
   // );
   return (
-    <form
+    <Form
       className="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto"
       onSubmit={handleSubmit}
     >
-      <h2 className="text-2xl font-bold text-purple-900 mb-4">
-        Iniciar Emulador Android
-      </h2>
-      <select
-        id="avdSelect"
-        name="avdSelect"
-        value={avdName}
-        onChange={(e) => setAvdName(e.target.value)}
-        className="w-full p-2 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
+      <FixedFooterLayout
+        footer={
+          <Box padding={16}>
+            <ButtonPrimary submit>Aceitar</ButtonPrimary>
+          </Box>
+        }
       >
-        <option value="" disabled>
-          Selecione um AVD
-        </option>
-        {avdsList.map((avd, index) => (
-          <option key={index} value={avd}>
-            {avd}
-          </option>
-        ))}
-      </select>
-      <label
-        className="block text-purple-800 text-sm font-medium mb-2"
-        htmlFor="gpuOption"
-      >
-        Ativar GPU:
-      </label>
-      <select
-        id="gpuOption"
-        name="gpuOption"
-        value={gpuOption}
-        onChange={(e) => setGpuOption(e.target.value)}
-        className="w-full p-2 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-      >
-        <option value="off">Desativado</option>
-        <option value="on">Ativado</option>
-      </select>
-
-      <button
-        type="submit"
-        className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-2 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 w-full"
-      >
-        Iniciar Emulador
-      </button>
-    </form>
+        <Box padding={2}>
+          <Select
+            id="avdSelect"
+            name="avdSelect"
+            value={avdName}
+            onChangeValue={setAvdName}
+            options={avdsList.map((avd) => ({
+              value: avd,
+              text: avd,
+            }))}
+            label={"Dispositivos virtuais criados"}
+          />
+        </Box>
+        <Box padding={2} paddingTop={16}>
+          <Select
+            id="gpuOption"
+            name="gpuOption"
+            value={gpuOption}
+            onChangeValue={setGpuOption}
+            options={[
+              { value: "off", text: "Desativado" },
+              { value: "on", text: "Ativado" },
+            ]}
+            label={"Ativar GPU"}
+          />
+        </Box>
+      </FixedFooterLayout>
+    </Form>
   );
 }

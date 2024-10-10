@@ -1,11 +1,19 @@
 import "./styles/globals.css";
-import '@telefonica/mistica/css/mistica.css';
+import "@telefonica/mistica/css/mistica.css";
 import NavBar from "./components/nav-bar/NavBar";
 import React, { useEffect, useState } from "react";
 import EmulatorForm from "./components/forms/EmulatorForm";
-import Output from "./components/core/Output";
 import { commandController } from "./controllers/commandController";
-import { ButtonPrimary } from "@telefonica/mistica";
+import {
+  Callout,
+  Grid,
+  GridItem,
+  BoxedRowList,
+  BoxedRow,
+  ResponsiveLayout,
+  skinVars,
+  Text4,
+} from "@telefonica/mistica";
 
 const App: React.FC = () => {
   const [output, setOutput] = useState<string>("");
@@ -13,13 +21,13 @@ const App: React.FC = () => {
   const handleExecuteCommand = async (
     dir: string,
     command: string,
-    shell: string
+    shell: string,
   ) => {
     try {
       const result = await commandController.executeCommand(
         dir,
         command,
-        shell
+        shell,
       );
       setOutput(result);
     } catch {
@@ -61,37 +69,58 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-gray-100 p-8">
+    <ResponsiveLayout>
       <NavBar />
       <div className="mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <ButtonPrimary
-            onPress={() =>
-              handleExecuteCommand(
-                "webdriver/kubernetes-b2c",
-                "pip install -r requirements.txt && python3 kubernetes.py",
-                "/bin/bash"
-              )
-            }
-          >Kubernetes-b2c: Ubuntu</ButtonPrimary>
-          <ButtonPrimary
-            onPress={() => handleExecuteShellCommand("scripts", "tracking.sh")}
-          >Shell Tagueamento</ButtonPrimary>
-          <ButtonPrimary
-            onPress={() => handleGetEmulator()}
-          >Comando de teste</ButtonPrimary>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-xl text-center font-semibold text-purple-800 mb-4">
-            Iniciar Emulador Android
-          </h2>
-          <EmulatorForm onSubmit={handleExecuteEmulator} avdsList={avdList} />
-        </div>
-
-        <Output output={output} />
+        <Grid columns={3} rows={1} gap={12}>
+          <GridItem>
+            <Text4 weight="regular" color={skinVars.colors.backgroundBrand}>
+              Janelas
+            </Text4>
+            <BoxedRowList>
+              <BoxedRow
+                title=""
+                description={"Dashboard Kubernetes"}
+                onPress={() =>
+                  handleExecuteCommand(
+                    "webdriver/kubernetes-b2c",
+                    "pip install -r requirements.txt && python3 kubernetes.py",
+                    "/bin/bash",
+                  )
+                }
+              />
+            </BoxedRowList>
+          </GridItem>
+          <GridItem>
+            <Text4 weight="regular" color={skinVars.colors.backgroundBrand}>
+              Terminais
+            </Text4>
+            <BoxedRowList>
+              <BoxedRow
+                title=""
+                description={"Tagueamentos"}
+                onPress={() => () =>
+                  handleExecuteShellCommand("scripts", "tracking.sh")
+                }
+              />
+            </BoxedRowList>
+          </GridItem>
+          <GridItem>
+            <Text4 weight="regular" color={skinVars.colors.backgroundBrand}>
+              Emulador
+            </Text4>
+            <BoxedRowList>
+              <EmulatorForm
+                onSubmit={handleExecuteEmulator}
+                avdsList={avdList}
+              />
+            </BoxedRowList>
+          </GridItem>
+        </Grid>
+        <div className="mb-8" />
+        <Callout description={output}></Callout>
       </div>
-    </div>
+    </ResponsiveLayout>
   );
 };
 

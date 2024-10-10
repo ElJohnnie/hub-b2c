@@ -1,4 +1,4 @@
-import { CommandGateway } from '../gateways/commandGateway';
+import { CommandGateway } from "../gateways/commandGateway";
 
 export class ExecuteEmulatorUseCase {
   private commandGateway: CommandGateway;
@@ -12,8 +12,7 @@ export class ExecuteEmulatorUseCase {
       const result = await this.commandGateway.executeEmulator(command);
       return result;
     } catch {
-      throw new Error('Erro ao iniciar emulador');
+      throw new Error("Erro ao iniciar emulador");
     }
   }
-
 }
