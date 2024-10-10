@@ -6,6 +6,8 @@ require('dotenv').config();
 
 const isDev = process.env.NODE_ENV === 'development';
 
+console.log(process.env.NODE_ENV, isDev);
+
 let mainWindow = null;
 
 function startBackend() {
@@ -63,6 +65,7 @@ function waitForReactDevServer(port, timeout = 30000) {
 }
 
 async function createWindow() {
+  console.log('Iniciando a janela do Electron...');
   if (isDev) {
     console.log('Iniciando o processo de desenvolvimento do frontend...');
 

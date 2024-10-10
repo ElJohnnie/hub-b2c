@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Hub B2C",
   "main": "src/main.js",
-  "homepage": "https://seu-repositorio.com",
+  "homepage": "./",
   "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "start": "concurrently \"npm run start:electron\" \"cd client && npm start\" \"cd server && npm run dev\"",
-    "package": "electron-builder",
-    "start:electron": "electron src/main.js",
-    "full-install": "npm install && cd client && npm install && cd ../server && npm install"
+    "package": "electron-builder -p always",
+    "start": "electron src/main.js",
+    "full-install": "npm install && cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build && cd ../server && npm run build && cd .. && npm run package"
   },
   "devDependencies": {
     "concurrently": "^7.4.0",
@@ -31,15 +31,39 @@
       "server/dist/**/*"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "ElJohnnie",
+          "repo": "hub-b2c",
+          "token": ""
+        }
+      ]
     },
     "mac": {
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "ElJohnnie",
+          "repo": "hub-b2c",
+          "token": ""
+        }
+      ]
     },
     "linux": {
       "target": [
         "AppImage",
         "deb"
+      ],
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "ElJohnnie",
+          "repo": "hub-b2c",
+          "token": ""
+        }
       ]
     }
   },

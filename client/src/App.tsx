@@ -1,10 +1,12 @@
 import "./styles/globals.css";
+import '@telefonica/mistica/css/mistica.css';
 import NavBar from "./components/nav-bar/NavBar";
 import React, { useEffect, useState } from "react";
 import Button from "./components/buttons/Button";
 import EmulatorForm from "./components/forms/EmulatorForm";
 import Output from "./components/core/Output";
 import { commandController } from "./controllers/commandController";
+import { ButtonPrimary } from "@telefonica/mistica";
 
 const App: React.FC = () => {
   const [output, setOutput] = useState<string>("");
@@ -78,10 +80,9 @@ const App: React.FC = () => {
             label="Shell Tagueamento: Ubuntu"
             onClick={() => handleExecuteShellCommand("scripts", "tracking.sh")}
           />
-          <Button
-            label="Comando de teste"
-            onClick={() => handleGetEmulator()}
-          />
+          <ButtonPrimary
+            onPress={() => handleGetEmulator()}
+          >Comando de teste</ButtonPrimary>
         </div>
 
         <div className="mb-8">
