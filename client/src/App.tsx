@@ -2,7 +2,6 @@ import "./styles/globals.css";
 import '@telefonica/mistica/css/mistica.css';
 import NavBar from "./components/nav-bar/NavBar";
 import React, { useEffect, useState } from "react";
-import Button from "./components/buttons/Button";
 import EmulatorForm from "./components/forms/EmulatorForm";
 import Output from "./components/core/Output";
 import { commandController } from "./controllers/commandController";
@@ -66,20 +65,18 @@ const App: React.FC = () => {
       <NavBar />
       <div className="mx-auto bg-white p-6 rounded-lg shadow-lg">
         <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Button
-            label="Kubernetes-b2c: Ubuntu"
-            onClick={() =>
+          <ButtonPrimary
+            onPress={() =>
               handleExecuteCommand(
                 "webdriver/kubernetes-b2c",
                 "pip install -r requirements.txt && python3 kubernetes.py",
                 "/bin/bash"
               )
             }
-          />
-          <Button
-            label="Shell Tagueamento: Ubuntu"
-            onClick={() => handleExecuteShellCommand("scripts", "tracking.sh")}
-          />
+          >Kubernetes-b2c: Ubuntu</ButtonPrimary>
+          <ButtonPrimary
+            onPress={() => handleExecuteShellCommand("scripts", "tracking.sh")}
+          >Shell Tagueamento</ButtonPrimary>
           <ButtonPrimary
             onPress={() => handleGetEmulator()}
           >Comando de teste</ButtonPrimary>
