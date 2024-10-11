@@ -43,21 +43,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+      - name: Build backend (server) and check for a successful 
+        run: |
+          cd server
+          npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Start backend (server) and check for a successful response
         run: |
           cd server
-          nohup npm run build &
-          nohup npm run start &
+          npm run start &
           sleep 10  # Aguarda o servidor iniciar
           curl -s http://localhost:5000
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Build frontend (client) and check for a successful
+        run: |
+          cd client
+          npm run build &
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Start frontend (client) and check for a successful launch
         run: |
           cd client
-          nohup npm run build &
-          nohup npm run start &
+          npm run start &
           sleep 60  # Aguarda o frontend iniciar
           curl -s http://localhost:3000
         env:
