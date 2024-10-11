@@ -3,9 +3,9 @@ import "@telefonica/mistica/css/mistica.css";
 import React, { useEffect, useState } from "react";
 
 import { commandController } from "../../../controllers/commandController";
-import { AppView } from "../Views/App.view";
+import { AppView } from "../views/App.view";
 
-const App: React.FC = () => {
+const AppController: React.FC = () => {
   const [output, setOutput] = useState<string>("");
   const [avdList, setAvdList] = useState<string[]>([]);
   const handleExecuteCommand = async (
@@ -70,4 +70,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default AppController;
