@@ -11,13 +11,12 @@ let devFrontProcess = null;
 function startBackend() {
   console.log('Iniciando o backend Express...');
 
-  const serverPath = app.isPackaged 
-    ? path.join(process.resourcesPath, 'server')
-    : path.join(__dirname, '../server');
+  const serverPath = path.join(process.resourcesPath, '..', 'server/dist');
+
 
   serverProcess = childProcess.spawn(
-    'node',
-    [path.join(serverPath, 'dist/server.js')],
+    'node', 
+    [path.join(serverPath, 'server.js')], 
     {
       cwd: serverPath,
       stdio: 'inherit',
@@ -46,57 +45,27 @@ function stopBackend() {
 async function createWindow() {
   console.log('Iniciando a janela do Electron...');
 
-  try {
-    await waitForServer(3000);
-  } catch (error) {
-    console.error('Erro: O backend não foi iniciado corretamente:', error);
-    app.quit();
-    return;
+    console.log('Iniciando o frontend em modo produção...');
+
+    mainWindow = new BrowserWindow({
+      width: 1280,
+      height: 800,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        disableHardwareAcceleration: true,
+        enableBlinkFeatures: 'None',
+      },
+      useVsync: false,
+    });
+
+    const startURL = `file://${path.join(process.resourcesPath, 'client/build/index.html')}`;
+
+    mainWindow.loadURL(startURL);
+
+    mainWindow.on('closed', () => (mainWindow = null));
   }
 
-  console.log('Iniciando o frontend em modo produção...');
-
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      disableHardwareAcceleration: true,
-      enableBlinkFeatures: 'None',
-    },
-    useVsync: false,
-  });
-
-  const startURL = `file://${path.join(process.resourcesPath, 'client/build/index.html')}`;
-
-  mainWindow.loadURL(startURL);
-
-  mainWindow.on('closed', () => (mainWindow = null));
-}
-
-function waitForServer(port, host = 'localhost', timeout = 5000) {
-  return new Promise((resolve, reject) => {
-    const startTime = Date.now();
-
-    const checkServer = () => {
-      const socket = net.createConnection(port, host, () => {
-        socket.end();
-        resolve();
-      });
-
-      socket.on('error', (err) => {
-        if (Date.now() - startTime >= timeout) {
-          reject(new Error(`Servidor não respondeu dentro do tempo limite (${timeout}ms)`));
-        } else {
-          setTimeout(checkServer, 500);
-        }
-      });
-    };
-
-    checkServer();
-  });
-}
 
 function stopFrontend() {
   if (devFrontProcess) {
