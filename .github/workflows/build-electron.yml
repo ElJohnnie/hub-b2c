@@ -46,6 +46,7 @@ jobs:
       - name: Start backend (server) and check for a successful response
         run: |
           cd server
+          nohup npm build &
           nohup npm start &
           sleep 10  # Aguarda o servidor iniciar
           curl -s http://localhost:5000
@@ -55,8 +56,9 @@ jobs:
       - name: Start frontend (client) and check for a successful launch
         run: |
           cd client
+          nohup npm build &
           nohup npm start &
-          sleep 10  # Aguarda o frontend iniciar
+          sleep 60  # Aguarda o frontend iniciar
           curl -s http://localhost:3000
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -68,6 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   build-windows:
+    needs: [test-build]
     runs-on: windows-latest
 
     steps:
@@ -117,6 +120,7 @@ jobs:
           path: windows-hub-b2c.zip
 
   build-linux:
+    needs: [test-build]
     runs-on: ubuntu-latest
 
     steps:
