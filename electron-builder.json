@@ -5,8 +5,7 @@
       "output": "dist"
     },
     "files": [
-      "dist/**/*",
-      "client/build/**/*",
+      "client/*",
       "server/dist/**/*",
       "src/main.js"
     ],
@@ -21,8 +20,8 @@
     },
     "extraResources": [
       {
-        "from": "client/build/",
-        "to": "client/build/",
+        "from": "client/",
+        "to": "client/",
         "filter": ["**/*"]
       },
       {
