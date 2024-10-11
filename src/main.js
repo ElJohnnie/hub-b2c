@@ -75,7 +75,7 @@ function stopFrontend() {
 }
 
 app.on('ready', () => {
-  // startBackend();
+  startBackend();
   createWindow();
 });
 
