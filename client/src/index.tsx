@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
 import {
   ThemeContextProvider,
   getVivoNewSkin,
@@ -9,8 +8,9 @@ import {
   Locale,
   RegionCode,
 } from "@telefonica/mistica";
+import App from "./pages/App/Controllers/App.controller";
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
+  document.getElementById("root") as HTMLElement
 );
 
 const misticaTheme = {
@@ -25,5 +25,5 @@ const misticaTheme = {
 root.render(
   <ThemeContextProvider theme={misticaTheme}>
     <App />
-  </ThemeContextProvider>,
+  </ThemeContextProvider>
 );

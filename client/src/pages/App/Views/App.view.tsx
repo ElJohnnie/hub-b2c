@@ -1,74 +1,25 @@
-import "./styles/globals.css";
-import "@telefonica/mistica/css/mistica.css";
-import NavBar from "./components/nav-bar/NavBar";
-import React, { useEffect, useState } from "react";
-import EmulatorForm from "./components/forms/EmulatorForm";
-import { commandController } from "./controllers/commandController";
+import React from "react";
 import {
-  Callout,
+  ResponsiveLayout,
   Grid,
   GridItem,
+  Text4,
+  skinVars,
   BoxedRowList,
   BoxedRow,
-  ResponsiveLayout,
-  skinVars,
-  Text4,
+  Callout,
 } from "@telefonica/mistica";
+import EmulatorForm from "../../../components/forms/EmulatorForm";
+import NavBar from "../../../components/nav-bar/NavBar";
+import { IApp } from "../interfaces/App.interface";
 
-const App: React.FC = () => {
-  const [output, setOutput] = useState<string>("");
-  const [avdList, setAvdList] = useState<string[]>([]);
-  const handleExecuteCommand = async (
-    dir: string,
-    command: string,
-    shell: string,
-  ) => {
-    try {
-      const result = await commandController.executeCommand(
-        dir,
-        command,
-        shell,
-      );
-      setOutput(result);
-    } catch {
-      setOutput("Erro ao executar comando");
-    }
-  };
-
-  const handleExecuteShellCommand = async (dir: string, command: string) => {
-    console.log(dir, command);
-    try {
-      const result = await commandController.executeShellCommand(dir, command);
-      setOutput(result);
-    } catch {
-      setOutput("Erro ao executar shell command");
-    }
-  };
-
-  const handleExecuteEmulator = async (command: string) => {
-    try {
-      const result = await commandController.executeEmulator(command);
-      setOutput(result);
-    } catch {
-      setOutput("Erro ao iniciar emulador");
-    }
-  };
-
-  const handleGetEmulator = async () => {
-    try {
-      const result = await commandController.executeEmulatorList();
-      setAvdList(result);
-    } catch (err) {
-      setOutput(String(err));
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      await handleGetEmulator();
-    })();
-  }, []);
-
+export const AppView = ({
+  handleExecuteCommand,
+  handleExecuteEmulator,
+  handleExecuteShellCommand,
+  avdList,
+  output,
+}: IApp) => {
   return (
     <ResponsiveLayout>
       <NavBar />
@@ -86,7 +37,7 @@ const App: React.FC = () => {
                   handleExecuteCommand(
                     "webdriver/kubernetes-b2c",
                     "pip install -r requirements.txt && python3 kubernetes.py",
-                    "/bin/bash",
+                    "/bin/bash"
                   )
                 }
               />
@@ -124,5 +75,3 @@ const App: React.FC = () => {
     </ResponsiveLayout>
   );
 };
-
-export default App;
