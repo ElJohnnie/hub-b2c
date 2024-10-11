@@ -5,17 +5,15 @@ require('dotenv').config();
 
 let mainWindow = null;
 let serverProcess = null;
-let devFrontProcess = null;
 
 function startBackend() {
   console.log('Iniciando o backend Express...');
 
-  const serverPath = path.join(process.resourcesPath, '..', 'server/dist');
-
+  const serverPath = path.join(__dirname, '..', 'server/dist');
 
   serverProcess = childProcess.spawn(
-    'node', 
-    [path.join(serverPath, 'server.js')], 
+    'node',
+    [path.join(serverPath, 'server.js')],
     {
       cwd: serverPath,
       stdio: 'inherit',
@@ -33,56 +31,53 @@ function startBackend() {
   console.log('Processo do backend iniciado com sucesso.');
 }
 
-function stopBackend() {
-  if (serverProcess) {
-    console.log('Parando o backend...');
-    serverProcess.kill();
-    serverProcess = null;
-  }
+function startFrontend() {
+  console.log('Iniciando o frontend React...');
+
+  const frontPath = path.join(__dirname, '..', 'client');
+  
+  childProcess.spawn(
+    'npm',
+    ['start'],
+    {
+      cwd: frontPath,
+      stdio: 'inherit',
+    }
+  );
+
+  console.log('Processo do frontend iniciado com sucesso.');
 }
 
 async function createWindow() {
   console.log('Iniciando a janela do Electron...');
 
-    console.log('Iniciando o frontend em modo produção...');
+  const startURL = `http://localhost:${process.env.REACT_APP_PORT}`;
+  console.log('Carregando URL:', startURL);
 
-    mainWindow = new BrowserWindow({
-      width: 1280,
-      height: 800,
-      webPreferences: {
-        nodeIntegration: false,
-        contextIsolation: true,
-        disableHardwareAcceleration: true,
-        enableBlinkFeatures: 'None',
-      },
-      useVsync: false,
-    });
+  mainWindow = new BrowserWindow({
+    width: 1280,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: false,
+    },
+  });
 
-    const startURL = `file://${path.join(process.resourcesPath, 'client/build/index.html')}`;
+  mainWindow.loadURL(startURL);
 
-    mainWindow.loadURL(startURL);
-
-    mainWindow.on('closed', () => (mainWindow = null));
-  }
-
-
-function stopFrontend() {
-  if (devFrontProcess) {
-    console.log('Parando o frontend...');
-    devFrontProcess.kill();
-    devFrontProcess = null;
-  }
+  mainWindow.on('closed', () => (mainWindow = null));
 }
 
 app.on('ready', () => {
   startBackend();
+  startFrontend();
   createWindow();
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    stopBackend();
-    stopFrontend();
+    serverProcess && serverProcess.kill();
     app.quit();
   }
 });

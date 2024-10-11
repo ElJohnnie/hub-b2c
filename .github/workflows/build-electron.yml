@@ -55,7 +55,7 @@ jobs:
           cd server
           npm run start &
           sleep 10  # Aguarda o servidor iniciar
-          curl -s http://localhost:5000
+          curl -s http://localhost:2345
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
