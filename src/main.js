@@ -6,9 +6,9 @@ require('dotenv').config();
 
 const isDev = process.env.NODE_ENV === 'development';
 
-console.log(process.env.NODE_ENV, isDev);
-
 let mainWindow = null;
+let serverProcess = null;
+let devFrontProcess = null;
 
 function startBackend() {
   console.log('Iniciando o backend Express...');
@@ -17,19 +17,16 @@ function startBackend() {
     ? path.join(__dirname, '../server')
     : path.join(process.resourcesPath, 'server');
 
-  const buildProcess = childProcess.spawn('npm', ['run', 'build'], {
-    cwd: serverPath,
-    stdio: 'inherit',
-  });
+  const nodeExecutable = isDev ? 'node' : process.execPath;
 
-  const serverProcess = childProcess.spawn('npm', ['run', isDev ? 'dev' : 'start'], {
-    cwd: serverPath,
-    stdio: 'inherit',
-  });
-
-  buildProcess.on('error', (err) => {
-    console.error('Erro ao iniciar o build do backend:', err);
-  });
+  serverProcess = childProcess.spawn(
+    nodeExecutable, 
+    isDev ? ['run', 'dev'] : [path.join(serverPath, 'server.js')], 
+    {
+      cwd: serverPath,
+      stdio: 'inherit',
+    }
+  );
 
   serverProcess.on('error', (err) => {
     console.error('Erro ao iniciar o backend:', err);
@@ -40,6 +37,14 @@ function startBackend() {
   });
 
   console.log('Processo do backend iniciado com sucesso.');
+}
+
+function stopBackend() {
+  if (serverProcess) {
+    console.log('Parando o backend...');
+    serverProcess.kill();
+    serverProcess = null;
+  }
 }
 
 function waitForReactDevServer(port, timeout = 30000) {
@@ -66,12 +71,13 @@ function waitForReactDevServer(port, timeout = 30000) {
 
 async function createWindow() {
   console.log('Iniciando a janela do Electron...');
+
   if (isDev) {
     console.log('Iniciando o processo de desenvolvimento do frontend...');
 
     const clientPath = path.join(__dirname, '../client');
 
-    const devFrontProcess = childProcess.spawn('npm', ['run', 'start'], {
+    devFrontProcess = childProcess.spawn('npm', ['run', 'start'], {
       cwd: clientPath,
       stdio: 'inherit',
     });
@@ -90,7 +96,7 @@ async function createWindow() {
         webPreferences: {
           nodeIntegration: false,
           contextIsolation: true,
-          disableHardwareAcceleration: true, 
+          disableHardwareAcceleration: true,
           enableBlinkFeatures: 'None',
         },
         useVsync: false,
@@ -111,7 +117,7 @@ async function createWindow() {
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        disableHardwareAcceleration: true, 
+        disableHardwareAcceleration: true,
         enableBlinkFeatures: 'None',
       },
       useVsync: false,
@@ -125,6 +131,14 @@ async function createWindow() {
   }
 }
 
+function stopFrontend() {
+  if (devFrontProcess) {
+    console.log('Parando o frontend...');
+    devFrontProcess.kill();
+    devFrontProcess = null;
+  }
+}
+
 app.on('ready', () => {
   startBackend();
   createWindow();
@@ -132,6 +146,8 @@ app.on('ready', () => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    stopBackend();
+    stopFrontend();
     app.quit();
   }
 });

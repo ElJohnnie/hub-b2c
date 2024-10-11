@@ -31,39 +31,15 @@
       "server/dist/**/*"
     ],
     "win": {
-      "target": "nsis",
-      "publish": [
-        {
-          "provider": "github",
-          "owner": "ElJohnnie",
-          "repo": "hub-b2c",
-          "token": ""
-        }
-      ]
+      "target": "nsis"
     },
     "mac": {
-      "category": "public.app-category.productivity",
-      "publish": [
-        {
-          "provider": "github",
-          "owner": "ElJohnnie",
-          "repo": "hub-b2c",
-          "token": ""
-        }
-      ]
+      "category": "public.app-category.productivity"
     },
     "linux": {
       "target": [
         "AppImage",
         "deb"
-      ],
-      "publish": [
-        {
-          "provider": "github",
-          "owner": "ElJohnnie",
-          "repo": "hub-b2c",
-          "token": ""
-        }
       ]
     }
   },
