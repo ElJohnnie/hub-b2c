@@ -1,7 +1,6 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const childProcess = require('child_process');
-const net = require('net');
 require('dotenv').config();
 
 let mainWindow = null;
