@@ -52,7 +52,7 @@ jobs:
 
       - name: Build bff (server) and check for a successful 
         run: |
-          cd server
+          cd bff
           npm run build
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
