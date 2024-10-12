@@ -10,8 +10,11 @@ const PORT = process.env.PORT || 2345;
 app.use(cors());
 app.use(express.json());
 
-// servir arquivos estáticos aqui no server e tratar o server diretamente como um só
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'dist/public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist/public/index.html'));
+});
 
 app.use('/', commandRoutes);
 

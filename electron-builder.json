@@ -5,8 +5,7 @@
       "output": "dist"
     },
     "files": [
-      "client/*",
-      "server/dist/**/*",
+      "bff/dist/**/*",
       "src/main.js"
     ],
     "win": {
@@ -20,13 +19,8 @@
     },
     "extraResources": [
       {
-        "from": "client/",
-        "to": "client/",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "server/dist/",
-        "to": "server/dist/",
+        "from": "bff/dist/",
+        "to": "bff/dist/",
         "filter": ["**/*"]
       }
     ],

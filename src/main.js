@@ -28,12 +28,16 @@ function createWindow(options = {}) {
 }
 
 function startBackend() {
-  const serverPath = isDev ? path.join(__dirname, '../server') : path.join(process.resourcesPath, 'server/dist');
-  const command = isDev ? 'dev' : 'start';
+  const serverPath = isDev 
+    ? path.join(__dirname, '../bff') 
+    : path.join(process.resourcesPath, 'bff/dist');
+
+  const command = isDev ? 'npm' : 'node';
+  const args = isDev ? ['run', 'dev'] : ['server.js'];
 
   console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
 
-  const serverProcess = childProcess.spawn('npm', ['run', command], {
+  const serverProcess = childProcess.spawn(command, args, {
     cwd: serverPath,
     stdio: 'inherit',
   });
@@ -49,7 +53,7 @@ function startBackend() {
   console.log('Processo do backend iniciado com sucesso.');
 }
 
-function waitForReactDevServer(port, timeout = 30000) {
+function waitForServer(port, timeout = 30000) {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
     const interval = setInterval(() => {
@@ -64,7 +68,7 @@ function waitForReactDevServer(port, timeout = 30000) {
       client.on('error', () => {
         if (Date.now() - startTime >= timeout) {
           clearInterval(interval);
-          reject(new Error(`Timeout ao aguardar o dev server na porta ${port}`));
+          reject(new Error(`Timeout ao aguardar o server na porta ${port}`));
         }
       });
     }, 1000);
@@ -72,24 +76,11 @@ function waitForReactDevServer(port, timeout = 30000) {
 }
 
 async function startFrontend() {
-  const clientPath = isDev ? path.join(__dirname, '../client') : path.join(process.resourcesPath, 'client');
-  
-  console.log(`Iniciando frontend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
-
-  const devFrontProcess = childProcess.spawn('npm', ['run', 'start'], {
-    cwd: clientPath,
-    stdio: 'inherit',
-  });
-
-  devFrontProcess.on('error', (err) => {
-    console.error(`Erro ao iniciar o frontend: ${err.message}`);
-  });
-
   try {
-    await waitForReactDevServer(1234);
+    await waitForServer(2345);
     console.log('Frontend pronto, criando a janela do Electron...');
     createWindow();
-    mainWindow.loadURL('http://localhost:1234');
+    mainWindow.loadURL('http://localhost:2345');
   } catch (error) {
     console.error('Erro ao iniciar o frontend:', error);
   }
@@ -130,7 +121,7 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
-  clearPorts([1234, 2345]);
+  clearPorts([2345]);
   if (process.platform !== 'darwin') {
     app.quit();
   }
