@@ -97,9 +97,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Install dependencies for server (backend)
+      - name: Install dependencies for bff (backend)
         run: |
-          cd server
+          cd bff
           npm install
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -149,7 +149,7 @@ jobs:
 
       - name: Install dependencies for server (backend)
         run: |
-          cd server
+          cd bff
           npm install
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
