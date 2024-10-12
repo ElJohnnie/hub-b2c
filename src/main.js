@@ -29,15 +29,12 @@ function createWindow(options = {}) {
 
 function startBackend() {
   const serverPath = isDev 
-    ? path.join(__dirname, '../bff') 
+    ? path.join(__dirname, '../bff/dist') 
     : path.join(process.resourcesPath, 'bff/dist');
-
-  const command = isDev ? 'npm' : 'node';
-  const args = isDev ? ['run', 'dev'] : ['server.js'];
 
   console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
 
-  const serverProcess = childProcess.spawn(command, args, {
+  const serverProcess = childProcess.spawn('node', ['server.js'], {
     cwd: serverPath,
     stdio: 'inherit',
   });
