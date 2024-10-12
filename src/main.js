@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
 const childProcess = require('child_process');
 const net = require('net');
@@ -27,27 +27,49 @@ function createWindow(options = {}) {
   });
 }
 
+function showError(message) {
+  dialog.showErrorBox('Erro', message);
+}
+
 function startBackend() {
   const serverPath = isDev 
     ? path.join(__dirname, '../bff/dist') 
     : path.join(process.resourcesPath, 'bff/dist');
 
+  console.log(`Caminho do server: ${path.join(serverPath, 'server.js')}`);
   console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
 
-  const serverProcess = childProcess.spawn('node', [path.join(serverPath, 'server.js')], {
-    cwd: serverPath,
-    stdio: 'inherit',
-  });
+  return new Promise((resolve, reject) => {
+    const serverProcess = childProcess.spawn('node', [path.join(serverPath, 'server.js')], {
+      cwd: serverPath,
+      stdio: 'inherit',
+    });
 
-  serverProcess.on('error', (err) => {
-    console.error(`Erro ao iniciar o backend: ${err.message}`);
-  });
+    serverProcess.on('error', (err) => {
+      console.error(`Erro ao iniciar o backend: ${err.message}`);
+      showError(`Erro ao iniciar o backend: ${err.message}`);
+      reject(err);
+    });
 
-  serverProcess.on('close', (code) => {
-    console.log(`Backend encerrado com código ${code}`);
-  });
+    serverProcess.on('close', (code) => {
+      console.log(`Backend encerrado com código ${code}`);
+      showError(`Backend encerrado com código ${code}`);
+      reject(new Error(`Backend encerrado com código ${code}`));
+    });
 
-  console.log('Processo do backend iniciado com sucesso.');
+    console.log('Processo do backend iniciado com sucesso.');
+    
+    waitForServer(2345, 30000)
+      .then(() => {
+        console.log('Backend está ouvindo na porta 2345');
+        resolve();
+      })
+      .catch((error) => {
+        console.error('Erro ao esperar o backend:', error.message);
+        showError(`Erro ao esperar o backend: ${error.message}`);
+        reject(error);
+      });
+  });
 }
 
 function waitForServer(port, timeout = 30000) {
@@ -74,12 +96,12 @@ function waitForServer(port, timeout = 30000) {
 
 async function startFrontend() {
   try {
-    await waitForServer(2345, 2000);
     console.log('Frontend pronto, criando a janela do Electron...');
     createWindow();
     mainWindow.loadURL('http://localhost:2345');
   } catch (error) {
     console.error('Erro ao iniciar o frontend:', error);
+    showError('Erro ao iniciar o frontend: ' + error.message);
   }
 }
 
@@ -112,9 +134,15 @@ function clearPorts(ports) {
   });
 }
 
-app.on('ready', () => {
-  startBackend();
-  startFrontend();
+app.on('ready', async () => {
+  try {
+    await startBackend();
+    await startFrontend();
+  } catch (error) {
+    console.error('Erro ao iniciar a aplicação:', error);
+    showError('Erro ao iniciar a aplicação: ' + error.message);
+    app.quit();
+  }
 });
 
 app.on('window-all-closed', () => {

@@ -5,6 +5,7 @@
       "output": "dist"
     },
     "files": [
+      "dist/",
       "bff/dist/**/*",
       "src/main.js"
     ],
