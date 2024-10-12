@@ -10,7 +10,7 @@
     "package": "electron-builder",
     "start": "electron src/main.js",
     "full-install": "npm install && cd client && npm install && cd ../server && npm install",
-    "build": "cd client && npm run build && cd ../server && npm run build && cd .. && npm run package"
+    "build": "cd client && npm run build && cd ../bff && npm run build && cd .. && npm run package"
   },
   "devDependencies": {
     "concurrently": "^7.4.0",
@@ -27,8 +27,7 @@
     "files": [
       "dist/**/*",
       "src/main.js",
-      "client/build/**/*",
-      "server/dist/**/*"
+      "bff/dist/**/*"
     ],
     "win": {
       "target": "nsis"

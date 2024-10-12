@@ -3,38 +3,47 @@ const path = require('path');
 const childProcess = require('child_process');
 const net = require('net');
 require('dotenv').config();
-const portfinder = require('portfinder');
 
 const isDev = process.env.NODE_ENV === 'development';
-
-console.log(process.env.NODE_ENV, isDev);
-
 let mainWindow = null;
 
+function createWindow(options = {}) {
+  const defaultOptions = {
+    width: 1280,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      disableHardwareAcceleration: true,
+      enableBlinkFeatures: 'None',
+    },
+    useVsync: false,
+  };
+
+  mainWindow = new BrowserWindow({ ...defaultOptions, ...options });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+}
+
 function startBackend() {
-  if(isDev){
-  console.log('Iniciando o backend Express...');
+  const serverPath = isDev 
+    ? path.join(__dirname, '../bff') 
+    : path.join(process.resourcesPath, 'bff/dist');
 
-  const serverPath = isDev
-    ? path.join(__dirname, '../server')
-    : path.join(process.resourcesPath, 'server');
+  const command = isDev ? 'npm' : 'node';
+  const args = isDev ? ['run', 'dev'] : ['server.js'];
 
-  const buildProcess = childProcess.spawn('npm', ['run', 'build'], {
+  console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
+
+  const serverProcess = childProcess.spawn(command, args, {
     cwd: serverPath,
     stdio: 'inherit',
-  });
-
-  const serverProcess = childProcess.spawn('npm', ['run', isDev ? 'dev' : 'start'], {
-    cwd: serverPath,
-    stdio: 'inherit',
-  });
-
-  buildProcess.on('error', (err) => {
-    console.error('Erro ao iniciar o build do backend:', err);
   });
 
   serverProcess.on('error', (err) => {
-    console.error('Erro ao iniciar o backend:', err);
+    console.error(`Erro ao iniciar o backend: ${err.message}`);
   });
 
   serverProcess.on('close', (code) => {
@@ -42,36 +51,11 @@ function startBackend() {
   });
 
   console.log('Processo do backend iniciado com sucesso.');
-  } else {
-    console.log('Backend em modo produção.');  
-    console.log('Iniciando o backend Express...');
-
-    const serverPath = path.join(process.resourcesPath, '..', 'server/dist');
-
-    const serverProcess = childProcess.spawn(
-      'node', 
-      [path.join(serverPath, 'server.js')], 
-      {
-        cwd: serverPath,
-        stdio: 'inherit',
-      }
-    );
-
-    serverProcess.on('error', (err) => {
-      console.error('Erro ao iniciar o backend:', err);
-    });
-
-    serverProcess.on('close', (code) => {
-      console.log(`Backend encerrado com código ${code}`);
-    });
-
-    console.log('Processo do backend iniciado com sucesso.');
-  }
 }
 
-function waitForReactDevServer(port, timeout = 30000) {
+function waitForServer(port, timeout = 30000) {
   return new Promise((resolve, reject) => {
-    const start = Date.now();
+    const startTime = Date.now();
     const interval = setInterval(() => {
       const client = new net.Socket();
 
@@ -82,99 +66,62 @@ function waitForReactDevServer(port, timeout = 30000) {
       });
 
       client.on('error', () => {
-        if (Date.now() - start >= timeout) {
+        if (Date.now() - startTime >= timeout) {
           clearInterval(interval);
-          reject(new Error('Dev server timeout'));
+          reject(new Error(`Timeout ao aguardar o server na porta ${port}`));
         }
       });
     }, 1000);
   });
 }
 
-async function createWindow() {
-  console.log('Iniciando a janela do Electron...');
-  if (isDev) {
-    console.log('Iniciando o processo de desenvolvimento do frontend...');
-
-    const clientPath = path.join(__dirname, '../client');
-
-    const devFrontProcess = childProcess.spawn('npm', ['run', 'start'], {
-      cwd: clientPath,
-      stdio: 'inherit',
-    });
-
-    devFrontProcess.on('error', (err) => {
-      console.error('Erro ao iniciar o build dev do frontend:', err);
-    });
-
-    try {
-      await waitForReactDevServer(1234);
-      console.log('Frontend está pronto, criando a janela do Electron...');
-
-      mainWindow = new BrowserWindow({
-        width: 1280,
-        height: 800,
-        webPreferences: {
-          nodeIntegration: false,
-          contextIsolation: true,
-          disableHardwareAcceleration: true, 
-          enableBlinkFeatures: 'None',
-        },
-        useVsync: false,
-      });
-
-      mainWindow.loadURL('http://localhost:1234');
-
-      mainWindow.on('closed', () => (mainWindow = null));
-    } catch (error) {
-      console.error('Erro ao iniciar o frontend:', error);
-    }
-  } else {
-    console.log('Iniciando o frontend em modo produção...');
-
-    mainWindow = new BrowserWindow({
-      width: 1280,
-      height: 800,
-      webPreferences: {
-        nodeIntegration: false,
-        contextIsolation: true,
-        disableHardwareAcceleration: true, 
-        enableBlinkFeatures: 'None',
-      },
-      useVsync: false,
-    });
-
-    const startURL = `file://${path.join(process.resourcesPath, 'client/build/index.html')}`;
-
-    mainWindow.loadURL(startURL);
-
-    mainWindow.on('closed', () => (mainWindow = null));
+async function startFrontend() {
+  try {
+    await waitForServer(2345);
+    console.log('Frontend pronto, criando a janela do Electron...');
+    createWindow();
+    mainWindow.loadURL('http://localhost:2345');
+  } catch (error) {
+    console.error('Erro ao iniciar o frontend:', error);
   }
 }
 
-function releasePorts() {
-    const ports = [1234, 2345]
-  
-    return Promise.all(
-      ports.map((port) =>
-        portfinder.getPortPromise({ port }).then((availablePort) => {
-          if (availablePort !== port) {
-            console.log(`Porta ${port} não está mais em uso.`);
-          } else {
-            console.log(`Porta ${port} está livre.`);
+function clearPorts(ports) {
+  ports.forEach((port) => {
+    const command = process.platform === 'win32' 
+      ? `netstat -ano | findstr :${port}` 
+      : `lsof -i :${port}`;
+
+    childProcess.exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Erro ao verificar a porta ${port}: ${error.message}`);
+        return;
+      }
+
+      const pid = process.platform === 'win32' ? stdout.split(/\s+/)[4] : stdout.split(/\s+/)[1];
+      if (pid) {
+        const killCommand = process.platform === 'win32' ? `taskkill /PID ${pid} /F` : `kill -9 ${pid}`;
+        childProcess.exec(killCommand, (killError) => {
+          if (killError) {
+            console.error(`Erro ao matar processo na porta ${port}: ${killError.message}`);
+            return;
           }
-        })
-      )
-    );
-  }
+          console.log(`Porta ${port} liberada. Processo ${pid} encerrado.`);
+        });
+      } else {
+        console.log(`Nenhum processo encontrado na porta ${port}`);
+      }
+    });
+  });
+}
 
 app.on('ready', () => {
   startBackend();
-  createWindow();
+  startFrontend();
 });
 
 app.on('window-all-closed', () => {
-  releasePorts();
+  clearPorts([2345]);
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -182,6 +129,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createWindow();
+    startFrontend();
   }
 });
