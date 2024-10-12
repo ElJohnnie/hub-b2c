@@ -34,7 +34,7 @@ function startBackend() {
 
   console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
 
-  const serverProcess = childProcess.spawn('node', ['server.js'], {
+  const serverProcess = childProcess.spawn('node', [path.join(serverPath, 'server.js')], {
     cwd: serverPath,
     stdio: 'inherit',
   });
@@ -74,7 +74,7 @@ function waitForServer(port, timeout = 30000) {
 
 async function startFrontend() {
   try {
-    await waitForServer(2345);
+    await waitForServer(2345, 2000);
     console.log('Frontend pronto, criando a janela do Electron...');
     createWindow();
     mainWindow.loadURL('http://localhost:2345');
