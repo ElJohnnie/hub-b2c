@@ -18,32 +18,11 @@
     "electron-builder": "^25.1.7",
     "electron-is-dev": "^3.0.1"
   },
-  "electronBuilder": {
-    "appId": "com.hub.b2c",
-    "productName": "Hub B2C",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "dist/**/*",
-      "src/main.js",
-      "bff/dist/**/*"
-    ],
-    "win": {
-      "target": "nsis"
-    },
-    "mac": {
-      "category": "public.app-category.productivity"
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    }
-  },
   "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "portfinder": "^1.0.32"
   }
 }

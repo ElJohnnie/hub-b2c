@@ -1,6 +1,6 @@
 const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
-const childProcess = require('child_process');
+const { spawn } = require('child_process');
 const net = require('net');
 require('dotenv').config();
 
@@ -33,33 +33,38 @@ function showError(message) {
 
 function startBackend() {
   const serverPath = isDev 
-    ? path.join(__dirname, '../bff/dist') 
-    : path.join(process.resourcesPath, 'bff/dist');
+    ? path.join(__dirname, '../bff/dist')
+    : path.join(process.resourcesPath, 'app/bff/dist');
 
-  console.log(`Caminho do server: ${path.join(serverPath, 'server.js')}`);
+  const serverScriptPath = path.join(serverPath, 'server.js');
+  console.log(`Caminho do server: ${serverScriptPath}`);
   console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
 
+  const nodePath = process.execPath; 
+
   return new Promise((resolve, reject) => {
-    const serverProcess = childProcess.spawn('node', [path.join(serverPath, 'server.js')], {
+    const serverProcess = spawn(nodePath, [serverScriptPath], {
       cwd: serverPath,
-      stdio: 'inherit',
+      stdio: 'pipe',
     });
 
-    serverProcess.on('error', (err) => {
-      console.error(`Erro ao iniciar o backend: ${err.message}`);
-      showError(`Erro ao iniciar o backend: ${err.message}`);
-      reject(err);
+    serverProcess.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
     });
 
-    serverProcess.on('close', (code) => {
-      console.log(`Backend encerrado com código ${code}`);
-      showError(`Backend encerrado com código ${code}`);
-      reject(new Error(`Backend encerrado com código ${code}`));
+    serverProcess.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+    });
+
+    serverProcess.on('error', (error) => {
+      console.error(`Erro ao iniciar o backend: ${error.message}`);
+      showError(`Erro ao iniciar o backend: ${error.message}`);
+      reject(error);
     });
 
     console.log('Processo do backend iniciado com sucesso.');
-    
-    waitForServer(2345, 30000)
+
+    waitForServer(2345, 1000)
       .then(() => {
         console.log('Backend está ouvindo na porta 2345');
         resolve();
@@ -105,35 +110,6 @@ async function startFrontend() {
   }
 }
 
-function clearPorts(ports) {
-  ports.forEach((port) => {
-    const command = process.platform === 'win32' 
-      ? `netstat -ano | findstr :${port}` 
-      : `lsof -i :${port}`;
-
-    childProcess.exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Erro ao verificar a porta ${port}: ${error.message}`);
-        return;
-      }
-
-      const pid = process.platform === 'win32' ? stdout.split(/\s+/)[4] : stdout.split(/\s+/)[1];
-      if (pid) {
-        const killCommand = process.platform === 'win32' ? `taskkill /PID ${pid} /F` : `kill -9 ${pid}`;
-        childProcess.exec(killCommand, (killError) => {
-          if (killError) {
-            console.error(`Erro ao matar processo na porta ${port}: ${killError.message}`);
-            return;
-          }
-          console.log(`Porta ${port} liberada. Processo ${pid} encerrado.`);
-        });
-      } else {
-        console.log(`Nenhum processo encontrado na porta ${port}`);
-      }
-    });
-  });
-}
-
 app.on('ready', async () => {
   try {
     await startBackend();
@@ -146,7 +122,6 @@ app.on('ready', async () => {
 });
 
 app.on('window-all-closed', () => {
-  clearPorts([2345]);
   if (process.platform !== 'darwin') {
     app.quit();
   }

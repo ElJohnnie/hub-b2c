@@ -1,32 +1,23 @@
 {
-    "appId": "com.hub.b2c",
-    "productName": "Hub B2C",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "dist/",
-      "bff/dist/**/*",
-      "src/main.js"
-    ],
-    "win": {
-      "target": ["nsis"]
-    },
-    "mac": {
-      "target": ["dmg"]
-    },
-    "linux": {
-      "target": ["AppImage", "deb"]
-    },
-    "extraResources": [
-      {
-        "from": "bff/dist/",
-        "to": "bff/dist/",
-        "filter": ["**/*"]
-      }
-    ],
-    "icon": "client/public/icon.png", 
-    "compression": "normal",
-    "asar": true
-  }
-  
+  "appId": "com.hub.b2c",
+  "productName": "Hub B2C",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "bff/dist/**/*",
+    "src/**/*" 
+  ],
+  "win": {
+    "target": ["nsis"]
+  },
+  "mac": {
+    "target": ["dmg"]
+  },
+  "linux": {
+    "target": ["AppImage", "deb"]
+  },
+  "icon": "client/public/icon.png",
+  "compression": "normal",
+  "asar": false
+}
