@@ -43,14 +43,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Install dependencies for server (backend)
+      - name: Install dependencies for bff (backend)
         run: |
-          cd server
+          cd bff
           npm install
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build backend (server) and check for a successful 
+      - name: Build bff (server) and check for a successful 
         run: |
           cd server
           npm run build
@@ -59,7 +59,7 @@ jobs:
 
       - name: Start backend (server) and check for a successful response
         run: |
-          cd server
+          cd bff
           npm run start &
           sleep 10  # Aguarda o servidor iniciar
           curl -s http://localhost:2345
