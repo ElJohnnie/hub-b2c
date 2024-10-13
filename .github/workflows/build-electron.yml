@@ -162,3 +162,13 @@ jobs:
           "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=ubuntu-hub-b2c.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Delete Windows ZIP artifact
+        run: |
+          echo "Deleting Windows artifact..."
+          rm windows-hub-b2c.zip
+
+      - name: Delete Ubuntu ZIP artifact
+        run: |
+          echo "Deleting Ubuntu artifact..."
+          rm ubuntu-hub-b2c.zip

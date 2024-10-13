@@ -31,9 +31,6 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
 
     hub-b2c/
     ├── client/                     # Aplicação React (front-end)
-    │   ├── public/                 
-    │   ├── src/
-    │   └── build/                  # Arquivos estáticos gerados após build, são direcionados ao public no bff
     ├── bff/                        # Aplicação Express (back-end), responsável por servir tanto o front quanto a camada de serviços
     ├── dist/                       # Aplicação empacotada (AppImage, deb, exe, etc.)
     ├── src/                        # Arquivos principais do Electron
