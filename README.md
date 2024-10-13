@@ -35,10 +35,9 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
     │   ├── src/
     │   └── build/                  # Arquivos estáticos gerados após build, são direcionados ao public no bff
     ├── bff/                        # Aplicação Express (back-end), responsável por servir tanto o front quanto a camada de serviços
-    │   ├── src/
-    │   └── dist/                   # Arquivos compilados
     ├── dist/                       # Aplicação empacotada (AppImage, deb, exe, etc.)
     ├── src/                        # Arquivos principais do Electron
+    │   └── dist/                   # Todos os arquivos compilados da aplicação
     ├── electron-builder.json        # Configuração de empacotamento
     ├── package.json
     └── README.md
