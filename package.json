@@ -3,20 +3,20 @@
   "version": "1.0.0",
   "description": "Hub B2C",
   "main": "src/main.js",
-  "homepage": "./",
   "author": "Jonatha Rodrigo Follmer <johnfollmer1995@gmail.com>",
   "license": "ISC",
   "scripts": {
     "package": "electron-builder",
-    "start": "electron src/main.js",
+    "start": "rimraf dist && rimraf src/dist && cd client && npm run build && cd ../bff && npm run build && cd .. && electron src/main.js",
     "full-install": "npm install && cd client && npm install && cd ../server && npm install",
-    "build": "cd client && npm run build && cd ../bff && npm run build && cd .. && npm run package"
+    "build": "rimraf dist && rimraf src/dist && cd client && npm run build && cd ../bff && npm run build && cd .. && npm run package"
   },
   "devDependencies": {
     "concurrently": "^7.4.0",
     "electron": "^32.1.2",
     "electron-builder": "^25.1.7",
-    "electron-is-dev": "^3.0.1"
+    "electron-is-dev": "^3.0.1",
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "body-parser": "^1.20.3",

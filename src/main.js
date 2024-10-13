@@ -1,11 +1,13 @@
 const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
+const { fork } = require('child_process');
 const net = require('net');
+const fs = require('fs');
 require('dotenv').config();
 
-const isDev = process.env.NODE_ENV === 'development';
 let mainWindow = null;
+
+const serverPath = path.join(__dirname, 'dist');
 
 function createWindow(options = {}) {
   const defaultOptions = {
@@ -32,76 +34,56 @@ function showError(message) {
 }
 
 function startBackend() {
-  const serverPath = isDev 
-    ? path.join(__dirname, '../bff/dist')
-    : path.join(process.resourcesPath, 'app/bff/dist');
-
+  process.env.PUBLIC_PATH = path.join(serverPath, 'public');
   const serverScriptPath = path.join(serverPath, 'server.js');
-  console.log(`Caminho do server: ${serverScriptPath}`);
-  console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
 
-  const nodePath = process.execPath; 
+  if (!fs.existsSync(serverScriptPath)) {
+    console.error(`Arquivo do servidor não encontrado em: ${serverScriptPath}`);
+    showError(`Arquivo do servidor não encontrado em: ${serverScriptPath}`);
+    return Promise.reject(new Error('Arquivo do servidor não encontrado'));
+  }
 
-  return new Promise((resolve, reject) => {
-    const serverProcess = spawn(nodePath, [serverScriptPath], {
-      cwd: serverPath,
-      stdio: 'pipe',
-    });
-
-    serverProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-    });
-
-    serverProcess.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
-    });
-
-    serverProcess.on('error', (error) => {
-      console.error(`Erro ao iniciar o backend: ${error.message}`);
-      showError(`Erro ao iniciar o backend: ${error.message}`);
-      reject(error);
-    });
-
-    console.log('Processo do backend iniciado com sucesso.');
-
-    waitForServer(2345, 1000)
-      .then(() => {
-        console.log('Backend está ouvindo na porta 2345');
-        resolve();
-      })
-      .catch((error) => {
-        console.error('Erro ao esperar o backend:', error.message);
-        showError(`Erro ao esperar o backend: ${error.message}`);
-        reject(error);
-      });
+  const serverProcess = fork(serverScriptPath, {
+    cwd: serverPath,
+    env: process.env,
+    stdio: 'pipe'
   });
+
+  serverProcess.stdout.on('data', (data) => {
+    console.log(`stdout: ${data.toString()}`);
+  });
+
+  serverProcess.stderr.on('data', (data) => {
+    console.error(`stderr: ${data.toString()}`);
+  });
+
+  serverProcess.on('close', (code) => {
+    console.error(`Processo do servidor encerrado com código ${code}`);
+  });
+
+  serverProcess.on('error', (error) => {
+    console.error(`Erro ao iniciar o backend: ${error.message}`);
+    showError(`Erro ao iniciar o backend: ${error.message}`);
+  });
+
+  console.log('Processo do backend iniciado com sucesso.');
 }
 
-function waitForServer(port, timeout = 30000) {
+function checkServer() {
   return new Promise((resolve, reject) => {
-    const startTime = Date.now();
-    const interval = setInterval(() => {
-      const client = new net.Socket();
-
-      client.connect({ port }, () => {
-        clearInterval(interval);
-        client.end();
-        resolve(true);
-      });
-
-      client.on('error', () => {
-        if (Date.now() - startTime >= timeout) {
-          clearInterval(interval);
-          reject(new Error(`Timeout ao aguardar o server na porta ${port}`));
-        }
-      });
-    }, 1000);
+    const client = net.createConnection({ port: 2345 }, () => {
+      client.end();
+      resolve(true);
+    });
+    client.on('error', () => {
+      reject(new Error('Servidor não está rodando na porta 2345'));
+    });
   });
 }
 
 async function startFrontend() {
   try {
-    console.log('Frontend pronto, criando a janela do Electron...');
+    await checkServer();
     createWindow();
     mainWindow.loadURL('http://localhost:2345');
   } catch (error) {
@@ -112,8 +94,8 @@ async function startFrontend() {
 
 app.on('ready', async () => {
   try {
-    await startBackend();
-    await startFrontend();
+    startBackend();
+    setTimeout(() => startFrontend(), 1000);
   } catch (error) {
     console.error('Erro ao iniciar a aplicação:', error);
     showError('Erro ao iniciar a aplicação: ' + error.message);
@@ -124,6 +106,8 @@ app.on('ready', async () => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  } else {
+    mainWindow = null;
   }
 });
 

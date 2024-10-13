@@ -5,9 +5,9 @@
     "output": "dist"
   },
   "files": [
-    "bff/dist/**/*",
     "src/**/*" 
   ],
+
   "win": {
     "target": ["nsis"]
   },
