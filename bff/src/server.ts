@@ -10,10 +10,12 @@ const PORT = process.env.PORT || 2345;
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, '..', 'dist/public')));
+const publicPath = process.env.PUBLIC_PATH || path.join(__dirname, 'public');
+
+app.use(express.static(publicPath));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'dist/public/index.html'));
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 app.use('/', commandRoutes);

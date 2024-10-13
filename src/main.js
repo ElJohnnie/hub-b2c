@@ -1,11 +1,13 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
-const childProcess = require('child_process');
+const { fork } = require('child_process');
 const net = require('net');
+const fs = require('fs');
 require('dotenv').config();
 
-const isDev = process.env.NODE_ENV === 'development';
 let mainWindow = null;
+
+const serverPath = path.join(__dirname, 'dist');
 
 function createWindow(options = {}) {
   const defaultOptions = {
@@ -27,100 +29,85 @@ function createWindow(options = {}) {
   });
 }
 
+function showError(message) {
+  dialog.showErrorBox('Erro', message);
+}
+
 function startBackend() {
-  const serverPath = isDev 
-    ? path.join(__dirname, '../bff/dist') 
-    : path.join(process.resourcesPath, 'bff/dist');
+  process.env.PUBLIC_PATH = path.join(serverPath, 'public');
+  const serverScriptPath = path.join(serverPath, 'server.js');
 
-  console.log(`Iniciando backend em modo ${isDev ? 'desenvolvimento' : 'produção'}...`);
+  if (!fs.existsSync(serverScriptPath)) {
+    console.error(`Arquivo do servidor não encontrado em: ${serverScriptPath}`);
+    showError(`Arquivo do servidor não encontrado em: ${serverScriptPath}`);
+    return Promise.reject(new Error('Arquivo do servidor não encontrado'));
+  }
 
-  const serverProcess = childProcess.spawn('node', ['server.js'], {
+  const serverProcess = fork(serverScriptPath, {
     cwd: serverPath,
-    stdio: 'inherit',
+    env: process.env,
+    stdio: 'pipe'
   });
 
-  serverProcess.on('error', (err) => {
-    console.error(`Erro ao iniciar o backend: ${err.message}`);
+  serverProcess.stdout.on('data', (data) => {
+    console.log(`stdout: ${data.toString()}`);
+  });
+
+  serverProcess.stderr.on('data', (data) => {
+    console.error(`stderr: ${data.toString()}`);
   });
 
   serverProcess.on('close', (code) => {
-    console.log(`Backend encerrado com código ${code}`);
+    console.error(`Processo do servidor encerrado com código ${code}`);
+  });
+
+  serverProcess.on('error', (error) => {
+    console.error(`Erro ao iniciar o backend: ${error.message}`);
+    showError(`Erro ao iniciar o backend: ${error.message}`);
   });
 
   console.log('Processo do backend iniciado com sucesso.');
 }
 
-function waitForServer(port, timeout = 30000) {
+function checkServer() {
   return new Promise((resolve, reject) => {
-    const startTime = Date.now();
-    const interval = setInterval(() => {
-      const client = new net.Socket();
-
-      client.connect({ port }, () => {
-        clearInterval(interval);
-        client.end();
-        resolve(true);
-      });
-
-      client.on('error', () => {
-        if (Date.now() - startTime >= timeout) {
-          clearInterval(interval);
-          reject(new Error(`Timeout ao aguardar o server na porta ${port}`));
-        }
-      });
-    }, 1000);
+    const client = net.createConnection({ port: 2345 }, () => {
+      client.end();
+      resolve(true);
+    });
+    client.on('error', () => {
+      reject(new Error('Servidor não está rodando na porta 2345'));
+    });
   });
 }
 
 async function startFrontend() {
   try {
-    await waitForServer(2345);
-    console.log('Frontend pronto, criando a janela do Electron...');
+    await checkServer();
     createWindow();
     mainWindow.loadURL('http://localhost:2345');
   } catch (error) {
     console.error('Erro ao iniciar o frontend:', error);
+    showError('Erro ao iniciar o frontend: ' + error.message);
   }
 }
 
-function clearPorts(ports) {
-  ports.forEach((port) => {
-    const command = process.platform === 'win32' 
-      ? `netstat -ano | findstr :${port}` 
-      : `lsof -i :${port}`;
-
-    childProcess.exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Erro ao verificar a porta ${port}: ${error.message}`);
-        return;
-      }
-
-      const pid = process.platform === 'win32' ? stdout.split(/\s+/)[4] : stdout.split(/\s+/)[1];
-      if (pid) {
-        const killCommand = process.platform === 'win32' ? `taskkill /PID ${pid} /F` : `kill -9 ${pid}`;
-        childProcess.exec(killCommand, (killError) => {
-          if (killError) {
-            console.error(`Erro ao matar processo na porta ${port}: ${killError.message}`);
-            return;
-          }
-          console.log(`Porta ${port} liberada. Processo ${pid} encerrado.`);
-        });
-      } else {
-        console.log(`Nenhum processo encontrado na porta ${port}`);
-      }
-    });
-  });
-}
-
-app.on('ready', () => {
-  startBackend();
-  startFrontend();
+app.on('ready', async () => {
+  try {
+    startBackend();
+    setTimeout(() => startFrontend(), 1000);
+  } catch (error) {
+    console.error('Erro ao iniciar a aplicação:', error);
+    showError('Erro ao iniciar a aplicação: ' + error.message);
+    app.quit();
+  }
 });
 
 app.on('window-all-closed', () => {
-  clearPorts([2345]);
   if (process.platform !== 'darwin') {
     app.quit();
+  } else {
+    mainWindow = null;
   }
 });
 
