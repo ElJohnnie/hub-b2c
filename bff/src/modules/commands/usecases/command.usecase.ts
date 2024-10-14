@@ -1,7 +1,6 @@
-import { spawn } from 'child_process';
 import path from 'path';
-import os from 'os';
 import UseCaseInterface from '../../../@shared/modules/usecases/use-cases.interface';
+import { ShellFactory } from '../../../factories/shell-factory';
 
 export default class CommandUseCase implements UseCaseInterface {
     private projectRoot: string;
@@ -17,32 +16,16 @@ export default class CommandUseCase implements UseCaseInterface {
         console.log(`Diretório: ${resolvedDir}`);
         console.log(`Comando: ${command}`);
 
-        if (os.platform() === 'win32') {
-            const fullCommand = `chmod +x ${command.trim()} && ./${command.trim()}`;
-            const terminalCommand = 'cmd.exe';
-            const terminalArgs = ['/c', 'start', 'cmd.exe', '/k', fullCommand];
+        const shellAdapter = ShellFactory.getShellAdapter();
+        
+        const fullCommand = `chmod +x ${command.trim()} && ./${command.trim()}`;
+        const process = shellAdapter.executeCommand(fullCommand, [], { detached: true, cwd: resolvedDir });
 
-            const process = spawn(terminalCommand, terminalArgs, { detached: true, cwd: resolvedDir });
-            return new Promise<string>((resolve, reject) => {
-                process.on('error', (err) => {
-                    reject(`Erro ao abrir o terminal: ${err}`);
-                });
-                resolve('Terminal aberto com o comando no Windows.');
+        return new Promise<string>((resolve, reject) => {
+            process.on('error', (err: any) => {
+                reject(`Erro ao abrir o terminal: ${err}`);
             });
-        } else if (os.platform() === 'linux') {
-            const terminalCommand = 'xterm';
-            const fullCommand = `chmod +x ${command.trim()} && ./${command.trim()}`;
-            const terminalArgs = ['-e', fullCommand];
-
-            const process = spawn(terminalCommand, terminalArgs, { detached: true, cwd: resolvedDir });
-            return new Promise<string>((resolve, reject) => {
-                process.on('error', (err) => {
-                    reject(`Erro ao abrir o terminal: ${err}`);
-                });
-                resolve('Terminal aberto com o comando no Linux.');
-            });
-        } else {
-            throw new Error('Sistema operacional não suportado');
-        }
+            resolve('Terminal aberto com o comando.');
+        });
     }
 }
