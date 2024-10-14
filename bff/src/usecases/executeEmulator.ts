@@ -2,6 +2,13 @@ import { spawn } from "child_process";
 import os from "os";
 import path from "path";
 
+let projectRoot = process.cwd();
+if(process.env.SERVER_PATH) {
+    projectRoot = process.env.SERVER_PATH;
+} else {
+    projectRoot = process.cwd();
+}
+
 export const executeEmulatorUseCase = async (body: { command: string }) => {
   const { command } = body;
 
@@ -36,7 +43,7 @@ export const executeEmulatorUseCase = async (body: { command: string }) => {
 };
 
 export const getEmulatorListUseCase = (): Promise<string[]> => {
-  const scriptPath = path.join(__dirname, "../../src/scripts");
+  const scriptPath = path.join(projectRoot, "scripts");
   if (os.platform() === "win32") {
     const emulatorBatPath = path.join(scriptPath, "getAdvs.bat");
     const bashRun = spawn("cmd.exe", ["/c", emulatorBatPath]);
@@ -58,7 +65,10 @@ export const getEmulatorListUseCase = (): Promise<string[]> => {
       });
     });
   } else if (os.platform() === "linux") {
+    console.log(scriptPath);
     const emulatorShPath = path.join(scriptPath, "getAdvs.sh");
+    console.log(emulatorShPath)
+
     const process = spawn("bash", [emulatorShPath]);
 
     return new Promise<string[]>((resolve, reject) => {
@@ -71,8 +81,10 @@ export const getEmulatorListUseCase = (): Promise<string[]> => {
       });
       process.on("close", (code) => {
         if (code === 0) {
+          console.log(output);
           resolve(output.split("\n").filter((item) => item));
         } else {
+          console.log(`Processo terminou com código: ${code}`);
           reject(`Processo terminou com código: ${code}`);
         }
       });
