@@ -1,5 +1,7 @@
 # Hub B2C
 
+**Observação**: Este projeto ainda está em desenvolvimento e pode sofrer alterações significativas.
+
 **Hub B2C** é uma aplicação desktop desenvolvida utilizando **Electron**, **React** e **Express** para oferecer uma interface intuitiva e funcional aos desenvolvedores que trabalham na área de **Vivo Telefônica B2C**. Este projeto visa centralizar uma série de rotinas e necessidades de desenvolvimento do time B2C, facilitando o dia a dia e proporcionando uma experiência de usuário dinâmica e responsiva.
 
 A aplicação combina um back-end robusto utilizando **Express.js** com uma interface front-end moderna em **React**, e é projetada para centralizar comandos e a abertura de janelas necessárias para facilitar o fluxo de trabalho dos desenvolvedores.
@@ -9,7 +11,7 @@ A aplicação combina um back-end robusto utilizando **Express.js** com uma inte
 - **Electron**: Para empacotamento e execução do aplicativo como um software desktop.
 - **React.js**: Framework JavaScript para construção da interface de usuário.
 - **Express.js**: Framework Node.js utilizado para gerenciar as rotas do servidor e API RESTful.
-- **Node.js**: Ambiente de execução JavaScript utilizado tanto no front-end quanto no back-end.
+- **Node.js**: Ambiente de execução JavaScript utilizado no software como um todo.
 - **TypeScript**: Linguagem usada para adicionar tipagem estática ao JavaScript, melhorando a segurança e manutenibilidade do código.
 - **Python 3**: Inicialmente para gerar as janelas chromedriver, mas em princípio será descontinuado.
 

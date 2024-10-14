@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/execute-command', executeCommand);
 router.post('/execute-emulator', executeEmulator);
-router.post('/execute-shell-command', executeShellCommand);
+// router.post('/execute-shell-command', executeShellCommand);
 router.post('/test-command', testCommand);
 router.get('/execute-emulator-list', executeGetEmulatorList);
 

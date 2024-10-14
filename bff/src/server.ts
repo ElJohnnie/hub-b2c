@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import commandRoutes from './routes/commandRoutes';
 import path from 'path';
+import commandRouter from './modules/commands/routes/commands-route';
 
 const app = express();
 const PORT = process.env.PORT || 2345;
@@ -17,6 +18,8 @@ app.use(express.static(publicPath));
 app.get('/', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
+
+app.use('/execute-shell-command', commandRouter);
 
 app.use('/', commandRoutes);
 
