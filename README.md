@@ -30,8 +30,8 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
 ## Estrutura do Projeto
 
     hub-b2c/
-    ├── client/                     # Aplicação React (front-end)
-    ├── bff/                        # Aplicação Express (back-end), responsável por servir tanto o front quanto a camada de serviços
+    ├── client/                     # Aplicação React (front-end), escopo de layout
+    ├── bff/                        # Aplicação Express (back-end), responsável por servir toda a aplicação
     ├── dist/                       # Aplicação empacotada (AppImage, deb, exe, etc.)
     ├── src/                        # Arquivos principais do Electron
     │   └── dist/                   # Todos os arquivos compilados da aplicação
