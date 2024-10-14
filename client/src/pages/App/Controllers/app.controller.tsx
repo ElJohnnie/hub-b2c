@@ -6,6 +6,8 @@ import { commandService } from "../../../services/command.service";
 import { AppView } from "../views/App.view";
 import { detectOS } from "../../../utils/detect-os";
 import useWindowDimensions from "../../../hooks/use-window-size";
+
+
 const AppController: React.FC = () => {
   const [category, setCategory] = useState<string>("");
   const [output, setOutput] = useState<string>("");
