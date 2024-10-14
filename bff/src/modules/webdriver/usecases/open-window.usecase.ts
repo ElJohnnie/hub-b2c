@@ -1,6 +1,6 @@
 import UseCaseInterface from "../../../@shared/modules/usecases/use-cases.interface";
-import { exec } from 'child_process';
 import path from 'path';
+import { ShellFactory } from "../../../factories/shell-factory";
 
 export default class OpenWindowUsecase implements UseCaseInterface {
     private projectRoot: string;
@@ -13,7 +13,6 @@ export default class OpenWindowUsecase implements UseCaseInterface {
         const { dir, command, shell } = body;
 
         const scriptPath = path.join(this.projectRoot, dir);
-
         const fullCommand = `cd ${scriptPath} && ${command}`;
 
         console.log(`Comando recebido: ${fullCommand}`);
@@ -21,18 +20,24 @@ export default class OpenWindowUsecase implements UseCaseInterface {
         console.log(`Comando: ${command}`);
         console.log(`Shell: ${shell}`);
 
+        const shellAdapter = ShellFactory.getShellAdapter();
+
+        const process = shellAdapter.executeCommand(fullCommand, [], { shell: shell || '/bin/bash' });
+
         return new Promise<string>((resolve, reject) => {
-            exec(fullCommand, { shell: shell || '/bin/bash' }, (error, stdout, stderr) => {
-                if (stderr) {
-                    console.log(`Erro: ${stderr}`);
-                    reject(`Erro: ${stderr}, ${error}`);
-                } else {
-                    console.log(`Saída: ${stdout}`);
-                    resolve(stdout);
-                }
+            process.stdout.on("data", (data: { toString: () => string | PromiseLike<string>; }) => {
+                console.log(`Saída: ${data.toString()}`);
+                resolve(data.toString());
             });
 
-            resolve(`Comando recebido com sucesso`);
+            process.stderr.on("data", (error: { toString: () => any; }) => {
+                console.log(`Erro: ${error.toString()}`);
+                reject(`Erro: ${error.toString()}`);
+            });
+
+            process.on("error", (err: any) => {
+                reject(`Erro ao executar o comando: ${err}`);
+            });
         });
     }
 }
