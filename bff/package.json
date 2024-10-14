@@ -2,7 +2,7 @@
   "name": "my-project",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/server.js",
+  "main": "dist/main.js",
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc && cp -R src/public ../src/dist/public && cp -R src/scripts ../src/dist/scripts && cp -R src/webdriver ../src/dist/webdriver",
