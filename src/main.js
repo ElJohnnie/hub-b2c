@@ -9,6 +9,8 @@ let mainWindow = null;
 
 const serverPath = path.join(__dirname, 'dist');
 
+process.env.SERVER_PATH = serverPath;
+
 function createWindow(options = {}) {
   const defaultOptions = {
     width: 1280,
