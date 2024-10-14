@@ -1,24 +1,24 @@
-import { ExecuteCommandUseCase } from "../usecases/executeCommand";
-import { ExecuteShellCommandUseCase } from "../usecases/executeShellCommand";
-import { ExecuteEmulatorUseCase } from "../usecases/executeEmulator";
+import { ExecuteCommandProvider } from "../providers/executeCommand";
+import { ExecuteShellCommandProvider } from "../providers/executeShellCommand";
+import { ExecuteEmulatorProvider } from "../providers/executeEmulator";
 import { CommandGateway } from "../gateways/commandGateway";
-import { ExecuteEmulatorListUseCase } from "../usecases/executeEmulatorList";
+import { ExecuteEmulatorListProvider } from "../providers/executeEmulatorList";
 
-const executeCommandUseCase = new ExecuteCommandUseCase(new CommandGateway());
+const executeCommandProvider = new ExecuteCommandProvider(new CommandGateway());
 
-const executeShellCommandUseCase = new ExecuteShellCommandUseCase(
+const executeShellCommandProvider = new ExecuteShellCommandProvider(
   new CommandGateway(),
 );
-const executeEmulatorUseCase = new ExecuteEmulatorUseCase(new CommandGateway());
+const executeEmulatorProvider = new ExecuteEmulatorProvider(new CommandGateway());
 
-const executeEmulatorListUseCase = new ExecuteEmulatorListUseCase(
+const executeEmulatorListProvider = new ExecuteEmulatorListProvider(
   new CommandGateway(),
 );
 
-export const commandController = {
+export const commandService = {
   async executeCommand(dir: string, command: string, shell: string) {
     try {
-      const output = await executeCommandUseCase.executeCommand(
+      const output = await executeCommandProvider.executeCommand(
         dir,
         command,
         shell,
@@ -31,7 +31,7 @@ export const commandController = {
 
   async executeShellCommand(dir: string, command: string) {
     try {
-      const output = await executeShellCommandUseCase.executeShellCommand(
+      const output = await executeShellCommandProvider.executeShellCommand(
         dir,
         command,
       );
@@ -43,7 +43,7 @@ export const commandController = {
 
   async executeEmulator(command: string) {
     try {
-      const output = await executeEmulatorUseCase.executeEmulator(command);
+      const output = await executeEmulatorProvider.executeEmulator(command);
       return output;
     } catch (error: unknown) {
       throw new Error((error as Error).message || "Erro ao executar comando");
@@ -53,7 +53,7 @@ export const commandController = {
   async executeEmulatorList(): Promise<string[]> {
     try {
       const output: string[] =
-        await executeEmulatorListUseCase.executeEmulatorList();
+        await executeEmulatorListProvider.executeEmulatorList();
       return output;
     } catch (error: unknown) {
       throw new Error((error as Error).message || "Erro ao executar comando");

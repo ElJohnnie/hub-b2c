@@ -1,6 +1,6 @@
 import { CommandGateway } from "../gateways/commandGateway";
 
-export class ExecuteEmulatorListUseCase {
+export class ExecuteEmulatorListProvider {
   private commandGateway: CommandGateway;
 
   constructor(commandGateway: CommandGateway) {

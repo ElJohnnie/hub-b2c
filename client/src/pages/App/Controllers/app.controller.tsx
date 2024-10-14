@@ -2,7 +2,7 @@ import "../../../styles/globals.css";
 import "@telefonica/mistica/css/mistica.css";
 import React, { useEffect, useState } from "react";
 
-import { commandController } from "../../../controllers/commandController";
+import { commandService } from "../../../services/command.service";
 import { AppView } from "../views/App.view";
 import { detectOS } from "../../../utils/detect-os";
 import useWindowDimensions from "../../../hooks/use-window-size";
@@ -28,14 +28,14 @@ const AppController: React.FC = () => {
 
     handleExecuteEmulator(command);
   };
-  
+
   const handleExecuteCommand = async (
     dir: string,
     command: string,
     shell: string
   ) => {
     try {
-      const result = await commandController.executeCommand(
+      const result = await commandService.executeCommand(
         dir,
         command,
         shell
@@ -49,7 +49,7 @@ const AppController: React.FC = () => {
   const handleExecuteShellCommand = async (dir: string, command: string) => {
     console.log(dir, command);
     try {
-      const result = await commandController.executeShellCommand(dir, command);
+      const result = await commandService.executeShellCommand(dir, command);
       setOutput(result);
     } catch {
       setOutput("Erro ao executar shell command");
@@ -58,7 +58,7 @@ const AppController: React.FC = () => {
 
   const handleExecuteEmulator = async (command: string) => {
     try {
-      const result = await commandController.executeEmulator(command);
+      const result = await commandService.executeEmulator(command);
       setOutput(result);
     } catch {
       setOutput("Erro ao iniciar emulador");
@@ -67,7 +67,7 @@ const AppController: React.FC = () => {
 
   const handleGetEmulator = async () => {
     try {
-      const result = await commandController.executeEmulatorList();
+      const result = await commandService.executeEmulatorList();
       setAvdList(result);
     } catch (err) {
       setOutput(String(err));

@@ -1,6 +1,6 @@
 import { CommandGateway } from "../gateways/commandGateway";
 
-export class ExecuteShellCommandUseCase {
+export class ExecuteShellCommandProvider {
   private commandGateway: CommandGateway;
 
   constructor(commandGateway: CommandGateway) {

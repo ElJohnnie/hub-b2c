@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc && cp -R src/public ../src/dist/public && cp -R src/scripts ../src/dist/scripts && cp -R src/webdriver ../src/dist/webdriver",
+    "build:windows": "tsc && xcopy src\\public dist\\public /E /I && xcopy src\\scripts dist\\scripts /E /I && xcopy src\\webdriver dist\\webdriver /E /I",
     "dev": "nodemon --watch src --exec ts-node src/server.ts"
   },
   "dependencies": {
