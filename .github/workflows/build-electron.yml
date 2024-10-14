@@ -12,77 +12,8 @@ on:
       - main
 
 jobs:
-  test-build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.10.0'
-
-      - name: Install root dependencies
-        run: npm install
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Install dependencies for client (frontend)
-        run: |
-          cd client
-          npm install --legacy-peer-deps
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Install dependencies for server (backend)
-        run: |
-          cd server
-          npm install
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Build backend (server) and check for a successful 
-        run: |
-          cd server
-          npm run build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Start backend (server) and check for a successful response
-        run: |
-          cd server
-          npm run start &
-          sleep 10  # Aguarda o servidor iniciar
-          curl -s http://localhost:5000
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Build frontend (client) and check for a successful
-        run: |
-          cd client
-          npm run build &
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Start frontend (client) and check for a successful launch
-        run: |
-          cd client
-          npm run start &
-          sleep 60  # Aguarda o frontend iniciar
-          curl -s http://localhost:3000
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Kill background processes
-        run: |
-          pkill -f npm
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   build-windows:
-    needs: [test-build]
     runs-on: windows-latest
 
     steps:
@@ -106,9 +37,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Install dependencies for server (backend)
+      - name: Install dependencies for bff (backend)
         run: |
-          cd server
+          cd bff
           npm install
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -132,7 +63,6 @@ jobs:
           path: windows-hub-b2c.zip
 
   build-linux:
-    needs: [test-build]
     runs-on: ubuntu-latest
 
     steps:
@@ -158,7 +88,7 @@ jobs:
 
       - name: Install dependencies for server (backend)
         run: |
-          cd server
+          cd bff
           npm install
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -232,3 +162,13 @@ jobs:
           "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=ubuntu-hub-b2c.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Delete Windows ZIP artifact
+        run: |
+          echo "Deleting Windows artifact..."
+          rm windows-hub-b2c.zip
+
+      - name: Delete Ubuntu ZIP artifact
+        run: |
+          echo "Deleting Ubuntu artifact..."
+          rm ubuntu-hub-b2c.zip

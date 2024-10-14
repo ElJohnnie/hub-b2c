@@ -4,7 +4,7 @@ export class CommandGateway {
     command: string,
     shell: string,
   ): Promise<string> {
-    const response = await fetch("http://localhost:5000/execute-command", {
+    const response = await fetch("http://localhost:2345/execute-command", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export class CommandGateway {
   }
 
   async executeEmulator(command: string): Promise<string> {
-    const response = await fetch("http://localhost:5000/execute-emulator", {
+    const response = await fetch("http://localhost:2345/execute-emulator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export class CommandGateway {
 
   async executeShellCommand(dir: string, command: string): Promise<string> {
     const response = await fetch(
-      "http://localhost:5000/execute-shell-command",
+      "http://localhost:2345/execute-shell-command",
       {
         method: "POST",
         headers: {
@@ -61,7 +61,7 @@ export class CommandGateway {
   }
 
   async testCommand(): Promise<string> {
-    const response = await fetch("http://localhost:5000/test-command", {
+    const response = await fetch("http://localhost:2345/test-command", {
       method: "POST",
     });
 
@@ -76,7 +76,7 @@ export class CommandGateway {
 
   async getAVDsCommand(): Promise<string[]> {
     const response = await fetch(
-      "http://localhost:5000/execute-emulator-list",
+      "http://localhost:2345/execute-emulator-list",
       {
         method: "GET",
       },
