@@ -1,8 +1,8 @@
-import { ExecuteCommandProvider } from "../providers/executeCommand";
-import { ExecuteShellCommandProvider } from "../providers/executeShellCommand";
-import { ExecuteEmulatorProvider } from "../providers/executeEmulator";
+import { ExecuteCommandProvider } from "../providers/commands/executeCommand";
+import { ExecuteShellCommandProvider } from "../providers/commands/executeShellCommand";
+import { ExecuteEmulatorProvider } from "../providers/emulator/executeEmulator";
 import { CommandGateway } from "../gateways/commandGateway";
-import { ExecuteEmulatorListProvider } from "../providers/executeEmulatorList";
+import { ExecuteEmulatorListProvider } from "../providers/emulator/executeEmulatorList";
 
 const executeCommandProvider = new ExecuteCommandProvider(new CommandGateway());
 
