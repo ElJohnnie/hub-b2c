@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import path from 'path';
 import os from 'os';
-import UseCaseInterface from '../../@shared/usecases/use-cases.interface';
+import UseCaseInterface from '../../../@shared/modules/usecases/use-cases.interface';
 
 export default class CommandUseCase implements UseCaseInterface {
     private projectRoot: string;

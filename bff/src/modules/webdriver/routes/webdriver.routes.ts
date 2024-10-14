@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import OpenWindowController from '../controller/webdriver.controller';
 import OpenWindowUsecase from '../usecases/open-window.usecase';
-import projectRoot from '../../@shared/config/project-root';
+import projectRoot from '../../../@shared/config/project-root';
 
 const openWindowRouter = Router();
 

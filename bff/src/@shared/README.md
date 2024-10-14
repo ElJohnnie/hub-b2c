@@ -1,0 +1,1 @@
+Tudo que é compartilhado no escopo do bff é colocado aqui
