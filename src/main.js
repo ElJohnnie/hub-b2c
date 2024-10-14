@@ -6,8 +6,11 @@ const fs = require('fs');
 require('dotenv').config();
 
 let mainWindow = null;
-
+const SERVER_PORT = 2345 || process.env.SERVER_PORT;
 const serverPath = path.join(__dirname, 'dist');
+const serverScriptPath = path.join(serverPath, 'server.js');
+process.env.SERVER_PATH = serverPath;
+process.env.PUBLIC_PATH = path.join(serverPath, 'public');
 
 function createWindow(options = {}) {
   const defaultOptions = {
@@ -34,19 +37,17 @@ function showError(message) {
 }
 
 function startBackend() {
-  process.env.PUBLIC_PATH = path.join(serverPath, 'public');
-  const serverScriptPath = path.join(serverPath, 'server.js');
-
   if (!fs.existsSync(serverScriptPath)) {
-    console.error(`Arquivo do servidor não encontrado em: ${serverScriptPath}`);
-    showError(`Arquivo do servidor não encontrado em: ${serverScriptPath}`);
-    return Promise.reject(new Error('Arquivo do servidor não encontrado'));
+    const errorMsg = `Arquivo que serve a aplicação não encontrado em: ${serverScriptPath}`;
+    console.error(errorMsg);
+    showError(errorMsg);
+    return Promise.reject(new Error(errorMsg));
   }
 
   const serverProcess = fork(serverScriptPath, {
     cwd: serverPath,
     env: process.env,
-    stdio: 'pipe'
+    stdio: 'pipe',
   });
 
   serverProcess.stdout.on('data', (data) => {
@@ -58,25 +59,26 @@ function startBackend() {
   });
 
   serverProcess.on('close', (code) => {
-    console.error(`Processo do servidor encerrado com código ${code}`);
+    console.error(`Processo do aplicação encerrado com código ${code}`);
   });
 
   serverProcess.on('error', (error) => {
-    console.error(`Erro ao iniciar o backend: ${error.message}`);
-    showError(`Erro ao iniciar o backend: ${error.message}`);
+    console.error(`Erro ao iniciar a aplicação: ${error.message}`);
+    showError(`Erro ao iniciar a aplicação: ${error.message}`);
   });
 
-  console.log('Processo do backend iniciado com sucesso.');
+  console.log('Processo da aplicação iniciado com sucesso.');
 }
 
 function checkServer() {
   return new Promise((resolve, reject) => {
-    const client = net.createConnection({ port: 2345 }, () => {
+    const client = net.createConnection({ port: SERVER_PORT }, () => {
       client.end();
       resolve(true);
     });
+
     client.on('error', () => {
-      reject(new Error('Servidor não está rodando na porta 2345'));
+      reject(new Error(`Aplicação não está rodando na porta ${SERVER_PORT}`));
     });
   });
 }
@@ -85,14 +87,14 @@ async function startFrontend() {
   try {
     await checkServer();
     createWindow();
-    mainWindow.loadURL('http://localhost:2345');
+    mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
   } catch (error) {
-    console.error('Erro ao iniciar o frontend:', error);
-    showError('Erro ao iniciar o frontend: ' + error.message);
+    console.error('Erro ao iniciar o layout:', error);
+    showError('Erro ao iniciar o layout: ' + error.message);
   }
 }
 
-app.on('ready', async () => {
+async function initializeApp() {
   try {
     startBackend();
     setTimeout(() => startFrontend(), 1000);
@@ -101,13 +103,13 @@ app.on('ready', async () => {
     showError('Erro ao iniciar a aplicação: ' + error.message);
     app.quit();
   }
-});
+}
+
+app.on('ready', initializeApp);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  } else {
-    mainWindow = null;
   }
 });
 
