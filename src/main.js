@@ -8,7 +8,7 @@ require('dotenv').config();
 let mainWindow = null;
 const SERVER_PORT = 2345 || process.env.SERVER_PORT;
 const serverPath = path.join(__dirname, 'dist');
-const serverScriptPath = path.join(serverPath, 'server.js');
+const serverScriptPath = path.join(serverPath, 'main.js');
 process.env.SERVER_PATH = serverPath;
 process.env.PUBLIC_PATH = path.join(serverPath, 'public');
 
