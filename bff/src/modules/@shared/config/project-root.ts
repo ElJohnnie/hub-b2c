@@ -1,4 +1,4 @@
-let projectRoot = process.cwd();
+let projectRoot: string;
 
 if (process.env.SERVER_PATH) {
     projectRoot = process.env.SERVER_PATH;

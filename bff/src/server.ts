@@ -3,15 +3,19 @@ import express from 'express';
 import cors from 'cors';
 import commandRoutes from './routes/commandRoutes';
 import path from 'path';
-import commandRouter from './modules/commands/routes/commands-route';
+import commandRouter from './modules/commands/routes/commands.route';
+import publicPath from './modules/@shared/config/public-path';
+import dotenv from 'dotenv';
+import emulatorRouter from './modules/emulator/routes/emulator.routes';
 
 const app = express();
 const PORT = process.env.PORT || 2345;
 
+dotenv.config();
+
 app.use(cors());
 app.use(express.json());
-
-const publicPath = process.env.PUBLIC_PATH || path.join(__dirname, 'public');
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(publicPath));
 
@@ -20,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/execute-shell-command', commandRouter);
+app.use('/emulator', emulatorRouter);
 
 app.use('/', commandRoutes);
 
