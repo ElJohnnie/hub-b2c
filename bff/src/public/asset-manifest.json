@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "./static/css/main.063a0540.css",
-    "main.js": "./static/js/main.af3b1485.js",
-    "static/js/995.389ba27c.chunk.js": "./static/js/995.389ba27c.chunk.js",
+    "main.js": "./static/js/main.cfd8d82d.js",
     "@juggle/resize-observer.js": "./static/js/@juggle/resize-observer.c0b9c51b.chunk.js",
+    "static/js/995.389ba27c.chunk.js": "./static/js/995.389ba27c.chunk.js",
     "react-autosuggest.js": "./static/js/react-autosuggest.5fe21ff5.chunk.js",
     "dialog.js": "./static/js/dialog.5fe7d2b9.chunk.js",
     "snackbar.js": "./static/js/snackbar.39d7ab07.chunk.js",
     "index.html": "./index.html",
     "main.063a0540.css.map": "./static/css/main.063a0540.css.map",
-    "main.af3b1485.js.map": "./static/js/main.af3b1485.js.map",
-    "995.389ba27c.chunk.js.map": "./static/js/995.389ba27c.chunk.js.map",
+    "main.cfd8d82d.js.map": "./static/js/main.cfd8d82d.js.map",
     "resize-observer.c0b9c51b.chunk.js.map": "./static/js/@juggle/resize-observer.c0b9c51b.chunk.js.map",
+    "995.389ba27c.chunk.js.map": "./static/js/995.389ba27c.chunk.js.map",
     "react-autosuggest.5fe21ff5.chunk.js.map": "./static/js/react-autosuggest.5fe21ff5.chunk.js.map",
     "dialog.5fe7d2b9.chunk.js.map": "./static/js/dialog.5fe7d2b9.chunk.js.map",
     "snackbar.39d7ab07.chunk.js.map": "./static/js/snackbar.39d7ab07.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.063a0540.css",
-    "static/js/main.af3b1485.js"
+    "static/js/main.cfd8d82d.js"
   ]
 }
