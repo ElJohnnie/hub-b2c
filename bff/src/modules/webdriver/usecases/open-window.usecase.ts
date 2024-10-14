@@ -1,4 +1,4 @@
-import UseCaseInterface from "../../@shared/usecases/use-cases.interface";
+import UseCaseInterface from "../../../@shared/modules/usecases/use-cases.interface";
 import { exec } from 'child_process';
 import path from 'path';
 

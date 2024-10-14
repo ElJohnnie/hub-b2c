@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import commandRouter from './modules/commands/routes/commands.route';
-import publicPath from './modules/@shared/config/public-path';
+import publicPath from './@shared/config/public-path';
 import dotenv from 'dotenv';
 import emulatorRouter from './modules/emulator/routes/emulator.routes';
 import openWindowRouter from './modules/webdriver/routes/webdriver.routes';
