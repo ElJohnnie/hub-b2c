@@ -1,4 +1,4 @@
-import { CommandGateway } from "../gateways/commandGateway";
+import { CommandGateway } from "../../gateways/commandGateway";
 
 export class ExecuteShellCommandProvider {
   private commandGateway: CommandGateway;
