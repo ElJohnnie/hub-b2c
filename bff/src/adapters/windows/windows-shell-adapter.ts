@@ -3,7 +3,7 @@ import { ShellAdapter } from '../../@shared/adapters/shell-adapter';
 import path from 'path';
 
 export class WindowsShellAdapter extends ShellAdapter {
-  executeCommand(command: string, args: string[], options: any) {
+  openCli(command: string, args: string[], options: any) {
     const terminalCommand = 'cmd.exe';
     const terminalArgs = ['/c', 'start', 'cmd.exe', '/k', command, ...args];
     return spawn(terminalCommand, terminalArgs, options);

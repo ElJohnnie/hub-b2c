@@ -1,6 +1,8 @@
 import path from 'path';
 import os from 'os';
 import { ShellFactory } from '../../../factories/shell-factory';
+import { DataCaptureError } from '../../../@shared/exceptions/exceptions';
+import { ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
 
 export default class GetAvdsUsecase {
     private projectRoot: string;
@@ -10,7 +12,7 @@ export default class GetAvdsUsecase {
     }
 
     async execute(): Promise<any> {
-        const scriptPath = path.join(this.projectRoot, "scripts");
+        const scriptPath = path.join(this.projectRoot, "src/scripts");
         
         const shellAdapter = ShellFactory.getShellAdapter();
 
@@ -18,21 +20,28 @@ export default class GetAvdsUsecase {
             ? path.join(scriptPath, "getAdvs.bat")
             : path.join(scriptPath, "getAdvs.sh");
 
+        console.log(`Script: ${scriptFile}`);
+
         const process = shellAdapter.runScript(scriptFile, [], { detached: false });
 
         return new Promise<string[]>((resolve, reject) => {
             let output = "";
+            
             process.stdout.on("data", (data: { toString: () => string; }) => {
                 output += data.toString();
             });
+
             process.stderr.on("data", (err: any) => {
-                reject(`Erro ao capturar os dados: ${err}`);
+                reject(new DataCaptureError(err.toString()));
             });
+
             process.on("close", (code: number) => {
                 if (code === 0) {
-                    resolve(output.split("\n").filter((item) => item));
+                    console.log("Processo terminou com sucesso");
+                    resolve(output.split("\n").filter((item) => item.trim()));
                 } else {
-                    reject(`Processo terminou com código: ${code}`);
+                    console.error(`Processo terminou com código: ${code}`);
+                    reject(new ProcessExecutionError(code));
                 }
             });
         });
