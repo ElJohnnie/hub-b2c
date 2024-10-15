@@ -21,8 +21,30 @@ export class CommandGateway {
     return data.output || "Erro na resposta";
   }
 
+  async openWindow(
+    dir: string,
+    command: string,
+    shell: string,
+  ): Promise<string> {
+    const response = await fetch("http://localhost:2345/open-window", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ dir, command, shell }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Erro ao executar comando");
+    }
+
+    const data = await response.json();
+    return data.output || "Erro na resposta";
+  }
+
   async executeEmulator(command: string): Promise<string> {
-    const response = await fetch("http://localhost:2345/execute-emulator", {
+    const response = await fetch("http://localhost:2345/emulator", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +98,7 @@ export class CommandGateway {
 
   async getAVDsCommand(): Promise<string[]> {
     const response = await fetch(
-      "http://localhost:2345/execute-emulator-list",
+      "http://localhost:2345/emulator/list",
       {
         method: "GET",
       },

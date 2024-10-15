@@ -1,6 +1,8 @@
 import UseCaseInterface from "../../../@shared/modules/usecases/use-cases.interface";
 import path from 'path';
 import { ShellFactory } from "../../../factories/shell-factory";
+import { ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
+import { ProcessOutputError } from '../../../@shared/exceptions/exceptions';
 
 export default class OpenWindowUsecase implements UseCaseInterface {
     private projectRoot: string;
@@ -12,7 +14,7 @@ export default class OpenWindowUsecase implements UseCaseInterface {
     async execute(body: { dir: string; command: string; shell?: string }): Promise<any> {
         const { dir, command, shell } = body;
 
-        const scriptPath = path.join(this.projectRoot, dir);
+        const scriptPath = path.join(this.projectRoot, 'src', dir);
         const fullCommand = `cd ${scriptPath} && ${command}`;
 
         console.log(`Comando recebido: ${fullCommand}`);
@@ -31,12 +33,12 @@ export default class OpenWindowUsecase implements UseCaseInterface {
             });
 
             process.stderr.on("data", (error: { toString: () => any; }) => {
-                console.log(`Erro: ${error.toString()}`);
-                reject(`Erro: ${error.toString()}`);
+                console.error(`Erro capturado: ${error.toString()}`);
+                reject(new ProcessOutputError(error.toString()));
             });
 
             process.on("error", (err: any) => {
-                reject(`Erro ao executar o comando: ${err}`);
+                reject(new ProcessExecutionError(err.toString())); 
             });
         });
     }

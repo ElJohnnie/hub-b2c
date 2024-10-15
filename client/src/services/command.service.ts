@@ -3,6 +3,9 @@ import { ExecuteShellCommandProvider } from "../providers/commands/executeShellC
 import { ExecuteEmulatorProvider } from "../providers/emulator/executeEmulator";
 import { CommandGateway } from "../gateways/commandGateway";
 import { ExecuteEmulatorListProvider } from "../providers/emulator/executeEmulatorList";
+import { OpenWindowProvider } from "../providers/webdriver/openWindow";
+
+const openWindowProvider = new OpenWindowProvider(new CommandGateway());
 
 const executeCommandProvider = new ExecuteCommandProvider(new CommandGateway());
 
@@ -16,6 +19,20 @@ const executeEmulatorListProvider = new ExecuteEmulatorListProvider(
 );
 
 export const commandService = {
+
+  async openWindow(dir: string, command: string, shell: string) {
+    try {
+      const output = await openWindowProvider.openWindow(
+        dir,
+        command,
+        shell,
+      );
+      return output;
+    } catch (error: unknown) {
+      throw new Error((error as Error).message || "Erro ao executar comando");
+    }
+  },
+  
   async executeCommand(dir: string, command: string, shell: string) {
     try {
       const output = await executeCommandProvider.executeCommand(

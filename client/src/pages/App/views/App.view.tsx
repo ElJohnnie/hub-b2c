@@ -18,7 +18,7 @@ import EmulatorForm from "../../../components/forms/EmulatorForm";
 import { IApp } from "../interfaces/App.interface";
 
 export const AppView = ({
-  handleExecuteCommand,
+  handleOpenWindow,
   handleExecuteShellCommand,
   avdList,
   output,
@@ -149,7 +149,7 @@ export const AppView = ({
                           <Box paddingBottom={40}>
                             <ButtonPrimary
                               onPress={() =>
-                                handleExecuteCommand(
+                                handleOpenWindow(
                                   "webdriver/kubernetes-b2c",
                                   "pip install -r requirements.txt && python3 kubernetes.py",
                                   "/bin/bash"

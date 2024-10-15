@@ -1,9 +1,9 @@
-import OpenWindowUsecase from "../usecases/open-window.usecase";
+import UseCaseInterface from "../../../@shared/modules/usecases/use-cases.interface";
 
 
 export default class OpenWindowController {
     constructor(
-        private openWindowUsecase: OpenWindowUsecase,
+        private openWindowUsecase: UseCaseInterface,
     ) {}
     
     async openWindow(req: any, res: any) { 
