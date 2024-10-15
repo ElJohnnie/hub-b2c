@@ -8,6 +8,9 @@ const commandController = new CommandController(commandUsecase);
 
 const commandRouter = Router();
 
-commandRouter.post('/', commandController.executeCommand.bind(commandController));
+commandRouter.post(
+  '/',
+  commandController.executeCommand.bind(commandController),
+);
 
 export default commandRouter;

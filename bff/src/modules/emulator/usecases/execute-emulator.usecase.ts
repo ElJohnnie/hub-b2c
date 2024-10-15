@@ -2,30 +2,30 @@ import { CommandNotProvidedError } from '../../../@shared/exceptions/exceptions'
 import { ShellFactory } from '../../../factories/shell-factory';
 
 export default class ExecuteEmulatorUsecase {
-    private projectRoot: string;
+  private projectRoot: string;
 
-    constructor(projectRoot: string) {
-        this.projectRoot = projectRoot;
+  constructor(projectRoot: string) {
+    this.projectRoot = projectRoot;
+  }
+
+  async execute(body: { command: string }): Promise<any> {
+    const { command } = body;
+
+    if (!command) {
+      throw new CommandNotProvidedError();
     }
 
-    async execute(body: { command: string }): Promise<any> {
-        const { command } = body;
+    console.log(`Comando: ${command}`);
 
-        if (!command) {
-            throw new CommandNotProvidedError();
-        }
-        
-        console.log(`Comando: ${command}`);
+    const shellAdapter = ShellFactory.getShellAdapter();
 
-        const shellAdapter = ShellFactory.getShellAdapter();
+    const process = shellAdapter.openCli(command, [], { detached: true });
 
-        const process = shellAdapter.openCli(command, [], { detached: true });
-
-        return new Promise<string>((resolve, reject) => {
-            process.stdout.on("error", (err: any) => {
-                reject(new Error(`Erro ao abrir o terminal: ${err}`));
-            });
-            resolve("AVD aberto com o comando.");
-        });
-    }
+    return new Promise<string>((resolve, reject) => {
+      process.stdout.on('error', (err: any) => {
+        reject(new Error(`Erro ao abrir o terminal: ${err}`));
+      });
+      resolve('AVD aberto com o comando.');
+    });
+  }
 }

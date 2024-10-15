@@ -5,10 +5,13 @@ import projectRoot from '../../../@shared/config/project-root';
 
 const openWindowRouter = Router();
 
-const openWindowController = new OpenWindowController(new OpenWindowUsecase(projectRoot));
+const openWindowController = new OpenWindowController(
+  new OpenWindowUsecase(projectRoot),
+);
 
-
-openWindowRouter.post('/', openWindowController.openWindow.bind(openWindowController));
-
+openWindowRouter.post(
+  '/',
+  openWindowController.openWindow.bind(openWindowController),
+);
 
 export default openWindowRouter;
