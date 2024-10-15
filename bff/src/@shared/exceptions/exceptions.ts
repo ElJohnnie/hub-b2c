@@ -32,3 +32,11 @@ export class ProcessExecutionError extends Error {
         this.name = 'ProcessExecutionError';
     }
 }
+
+export class ProcessOutputError extends Error {
+    constructor(message: string) {
+        super(`Erro capturado no stderr: ${message}`);
+        this.name = 'ProcessOutputError';
+    }
+}
+

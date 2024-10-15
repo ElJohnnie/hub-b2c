@@ -1,6 +1,8 @@
 import UseCaseInterface from "../../../@shared/modules/usecases/use-cases.interface";
 import path from 'path';
 import { ShellFactory } from "../../../factories/shell-factory";
+import { ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
+import { ProcessOutputError } from '../../../@shared/exceptions/exceptions';
 
 export default class OpenWindowUsecase implements UseCaseInterface {
     private projectRoot: string;
@@ -12,31 +14,38 @@ export default class OpenWindowUsecase implements UseCaseInterface {
     async execute(body: { dir: string; command: string; shell?: string }): Promise<any> {
         const { dir, command, shell } = body;
 
-        const scriptPath = path.join(this.projectRoot, dir);
-        const fullCommand = `cd ${scriptPath} && ${command}`;
-
-        console.log(`Comando recebido: ${fullCommand}`);
-        console.log(`Diretório: ${scriptPath}`);
+        const scriptDir = path.join(this.projectRoot, 'src', dir);
+        console.log(`Diretório do script: ${scriptDir}`);
         console.log(`Comando: ${command}`);
-        console.log(`Shell: ${shell}`);
 
         const shellAdapter = ShellFactory.getShellAdapter();
 
-        const process = shellAdapter.runScript(fullCommand, [], { shell: shell || '/bin/bash' });
+        const process = shellAdapter.runWebdriver(command, scriptDir);
 
         return new Promise<string>((resolve, reject) => {
-            process.stdout.on("data", (data: { toString: () => string | PromiseLike<string>; }) => {
+            let output = '';
+
+            process.stdout?.on("data", (data: { toString: () => string; }) => {
+                output += data.toString();
                 console.log(`Saída: ${data.toString()}`);
-                resolve(data.toString());
             });
 
-            process.stderr.on("data", (error: { toString: () => any; }) => {
+            process.stderr?.on("data", (error: { toString: () => string; }) => {
                 console.log(`Erro: ${error.toString()}`);
-                reject(`Erro: ${error.toString()}`);
+                reject(new ProcessOutputError(error.toString()));
+            });
+
+            process.on("close", (code: number) => {
+                if (code === 0) {
+                    resolve(output);
+                } else {
+                    reject(new ProcessExecutionError(code));
+                }
             });
 
             process.on("error", (err: any) => {
-                reject(`Erro ao executar o comando: ${err}`);
+                console.log(err)
+                reject(new ProcessExecutionError(err.toString()));
             });
         });
     }

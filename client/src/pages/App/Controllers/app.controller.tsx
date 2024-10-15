@@ -31,6 +31,15 @@ const AppController: React.FC = () => {
     handleExecuteEmulator(command);
   };
 
+  const handleOpenWindow = async (dir: string, command: string, shell: string) => {
+    try {
+      const result = await commandService.openWindow(dir, command, shell);
+      setOutput(result);
+    } catch {
+      setOutput("Erro ao abrir janela");
+    }
+  }
+
   const handleExecuteCommand = async (
     dir: string,
     command: string,
@@ -96,6 +105,7 @@ const AppController: React.FC = () => {
 
   return (
     <AppView
+      handleOpenWindow={handleOpenWindow}
       handleExecuteCommand={handleExecuteCommand}
       handleExecuteShellCommand={handleExecuteShellCommand}
       avdList={avdList}
