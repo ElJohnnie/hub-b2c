@@ -1,4 +1,5 @@
 ## Funcionalidades a Implementar
+- [ ] Implementar como persistir configurações pessoais de cada usuário
 - [ ] Gerador de sessão (linha e cpf)
 - [ ] Acesso ao Open Lens (Acesso ao open lens)
 - [ ] Acesso ao wikicorp (Scrapping com MFA/OTP)
@@ -7,9 +8,8 @@
 ## Bugs a Corrigir
 - [ ] Não limpando as portas corretamente ao finalizar a execução
 
-
 ## Melhorias
-
+- [ ] Desenvolver solução para Mac
 
 ## Documentação
 - [ ] Atualizar README com instruções de configuração
@@ -22,4 +22,3 @@
 
 
 ## Diversos
-- [ ] Desenvolver solução para Mac
