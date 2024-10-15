@@ -11,7 +11,7 @@ const emulatorController = new EmulatorController(
 
 const emulatorRouter = Router();
 
-emulatorRouter.post('/', emulatorController.execute);
-emulatorRouter.get('/list', emulatorController.getEmulatorList);
+emulatorRouter.post('/', emulatorController.execute.bind(emulatorController));
+emulatorRouter.get('/list', emulatorController.getEmulatorList.bind(emulatorController));
 
 export default emulatorRouter;

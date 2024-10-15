@@ -8,7 +8,7 @@ const openWindowRouter = Router();
 const openWindowController = new OpenWindowController(new OpenWindowUsecase(projectRoot));
 
 
-openWindowRouter.post('/', openWindowController.openWindow);
+openWindowRouter.post('/', openWindowController.openWindow.bind(openWindowController));
 
 
 export default openWindowRouter;

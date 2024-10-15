@@ -22,7 +22,7 @@ export default class OpenWindowUsecase implements UseCaseInterface {
 
         const shellAdapter = ShellFactory.getShellAdapter();
 
-        const process = shellAdapter.executeCommand(fullCommand, [], { shell: shell || '/bin/bash' });
+        const process = shellAdapter.runScript(fullCommand, [], { shell: shell || '/bin/bash' });
 
         return new Promise<string>((resolve, reject) => {
             process.stdout.on("data", (data: { toString: () => string | PromiseLike<string>; }) => {

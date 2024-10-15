@@ -3,7 +3,7 @@ import { ShellAdapter } from '../../@shared/adapters/shell-adapter';
 import path from 'path';
 
 export class LinuxShellAdapter extends ShellAdapter {
-  executeCommand(command: string, args: string[], options: any) {
+  openCli(command: string, args: string[], options: any) {
     const terminalCommand = 'xterm';
     const terminalArgs = ['-e', command, ...args];
     return spawn(terminalCommand, terminalArgs, options);

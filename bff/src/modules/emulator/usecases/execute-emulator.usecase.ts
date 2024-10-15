@@ -1,4 +1,4 @@
-import path from 'path';
+import { CommandNotProvidedError } from '../../../@shared/exceptions/exceptions';
 import { ShellFactory } from '../../../factories/shell-factory';
 
 export default class ExecuteEmulatorUsecase {
@@ -11,15 +11,19 @@ export default class ExecuteEmulatorUsecase {
     async execute(body: { command: string }): Promise<any> {
         const { command } = body;
 
+        if (!command) {
+            throw new CommandNotProvidedError();
+        }
+        
         console.log(`Comando: ${command}`);
 
         const shellAdapter = ShellFactory.getShellAdapter();
 
-        const process = shellAdapter.executeCommand(command, [], { detached: true });
+        const process = shellAdapter.openCli(command, [], { detached: true });
 
         return new Promise<string>((resolve, reject) => {
             process.stdout.on("error", (err: any) => {
-                reject(`Erro ao abrir o terminal: ${err}`);
+                reject(new Error(`Erro ao abrir o terminal: ${err}`));
             });
             resolve("AVD aberto com o comando.");
         });
