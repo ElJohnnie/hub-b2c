@@ -3,12 +3,20 @@ import path from 'path';
 import { ShellFactory } from '../../../factories/shell-factory';
 import { ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
 import { ProcessOutputError } from '../../../@shared/exceptions/exceptions';
+import { ShellAdapter } from '../../../@shared/adapters/shell-adapter';
 
 export default class OpenWindowUsecase implements UseCaseInterface {
   private projectRoot: string;
+  private scriptPath: string;
+  private scriptFile: string;
+  private shellAdapter: ShellAdapter;
+  private processCommand: any;
 
   constructor(projectRoot: string) {
+    this.scriptPath = ''; 
+    this.scriptFile = '';
     this.projectRoot = projectRoot;
+    this.shellAdapter = ShellFactory.getShellAdapter();
   }
 
   async execute(body: {
@@ -18,28 +26,27 @@ export default class OpenWindowUsecase implements UseCaseInterface {
   }): Promise<any> {
     const { dir, command, shell } = body;
 
-    const scriptDir = path.join(this.projectRoot, dir);
-    console.log(`Diretório do script: ${scriptDir}`);
+    this.scriptPath = path.join(this.projectRoot, dir);
+    console.log(`Diretório do script: ${this.scriptPath}`);
     console.log(`Comando: ${command}`);
 
-    const shellAdapter = ShellFactory.getShellAdapter();
 
-    const process = shellAdapter.runWebdriver(command, scriptDir);
+    this.processCommand = this.shellAdapter.runWebdriver(command, this.scriptPath);
 
     return new Promise<string>((resolve, reject) => {
       let output = '';
 
-      process.stdout?.on('data', (data: { toString: () => string }) => {
+      this.processCommand.stdout?.on('data', (data: { toString: () => string }) => {
         output += data.toString();
         console.log(`Saída: ${data.toString()}`);
       });
 
-      process.stderr?.on('data', (error: { toString: () => string }) => {
+      this.processCommand.stderr?.on('data', (error: { toString: () => string }) => {
         console.log(`Erro: ${error.toString()}`);
         reject(new ProcessOutputError(error.toString()));
       });
 
-      process.on('close', (code: number) => {
+      this.processCommand.on('close', (code: number) => {
         if (code === 0) {
           resolve(output);
         } else {
@@ -47,7 +54,7 @@ export default class OpenWindowUsecase implements UseCaseInterface {
         }
       });
 
-      process.on('error', (err: any) => {
+      this.processCommand.on('error', (err: any) => {
         console.log(err);
         reject(new ProcessExecutionError(err.toString()));
       });
