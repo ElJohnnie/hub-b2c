@@ -8,6 +8,7 @@ bff/src/public
 client/build
 src/dist
 src/build
+dist
 
 .env
 .env.local

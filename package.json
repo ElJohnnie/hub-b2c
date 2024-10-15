@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "package": "electron-builder",
-    "start": "rimraf dist && rimraf src/dist && cd client && npm run build && cd ../bff && npm run build && cd .. && electron src/main.js",
+    "start": "cd client && npm run build && cd ../bff && npm run build && cd .. && electron src/main.js",
     "full-install": "npm install && cd client && npm install && cd ../server && npm install",
     "build": "rimraf dist && rimraf src/dist && cd client && npm run build && cd ../bff && npm run build && cd .. && npm run package"
   },
