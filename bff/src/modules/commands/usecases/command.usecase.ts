@@ -52,8 +52,7 @@ export default class CommandUseCase implements UseCaseInterface {
         cwd: this.resolvedDir,
       });
     } else {
-      console.log('Abrindo terminal sem diretório');
-      this.processCommand = this.shellAdapter.runScript(undefined, [command], {
+      this.processCommand = this.shellAdapter.openCli(command, [], {
         detached: true,
       });
     }
@@ -62,7 +61,19 @@ export default class CommandUseCase implements UseCaseInterface {
       this.processCommand.on('error', (err: any) => {
         reject(new ShellExecutionError(err.message));
       });
-      resolve('Terminal aberto com o comando.');
+
+      this.processCommand.on('exit', (code: number, signal: string) => {
+        if (code !== 0) {
+          reject(new ShellExecutionError(`Process exited with code ${code} and signal ${signal}`));
+        }
+      });
+
+      this.processCommand.on('close', (code: number) => {
+        if (code !== 0) {
+          reject(new ShellExecutionError(`Process closed with code ${code}`));
+        }
+      });
+      resolve('Comando executado.');
     });
   }
 }
