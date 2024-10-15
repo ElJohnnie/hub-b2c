@@ -6,6 +6,7 @@ export class LinuxShellAdapter extends ShellAdapter {
   openCli(command: string, args: string[], options: any) {
     const terminalCommand = 'xterm';
     const terminalArgs = ['-e', command, ...args];
+    console.log(`Comando: ${terminalArgs}`);
     return spawn(terminalCommand, terminalArgs, options);
   }
 

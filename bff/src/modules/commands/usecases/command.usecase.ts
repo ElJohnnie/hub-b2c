@@ -1,9 +1,8 @@
 import path from 'path';
+import os from 'os';
 import UseCaseInterface from '../../../@shared/modules/usecases/use-cases.interface';
 import { ShellFactory } from '../../../factories/shell-factory';
-import { CommandNotProvidedError } from '../../../@shared/exceptions/exceptions';
-import { ShellExecutionError } from '../../../@shared/exceptions/exceptions';
-import { DirectoryNotProvidedError } from '../../../@shared/exceptions/exceptions';
+import { CommandNotProvidedError, ShellExecutionError, DirectoryNotProvidedError } from '../../../@shared/exceptions/exceptions';
 
 export default class CommandUseCase implements UseCaseInterface {
     private projectRoot: string;
@@ -28,8 +27,17 @@ export default class CommandUseCase implements UseCaseInterface {
         console.log(`Comando: ${command}`);
 
         const shellAdapter = ShellFactory.getShellAdapter();
-        const fullCommand = `chmod +x ${command.trim()} && ./${command.trim()}`;
+        
+        let fullCommand: string;
+
+        if (os.platform() === 'win32') {
+            fullCommand = `${command.trim()}`;
+        } else {
+            fullCommand = `sh ${command.trim()}`;
+        }
+
         console.log(`Comando completo: ${fullCommand}`);
+
         const process = shellAdapter.openCli(fullCommand, [], { detached: true, cwd: resolvedDir });
 
         return new Promise<string>((resolve, reject) => {
