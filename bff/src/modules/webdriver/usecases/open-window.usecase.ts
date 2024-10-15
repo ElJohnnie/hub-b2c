@@ -14,7 +14,7 @@ export default class OpenWindowUsecase implements UseCaseInterface {
     async execute(body: { dir: string; command: string; shell?: string }): Promise<any> {
         const { dir, command, shell } = body;
 
-        const scriptDir = path.join(this.projectRoot, 'src', dir);
+        const scriptDir = path.join(this.projectRoot, dir);
         console.log(`Diretório do script: ${scriptDir}`);
         console.log(`Comando: ${command}`);
 

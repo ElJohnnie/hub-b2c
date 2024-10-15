@@ -12,7 +12,9 @@ export default class GetAvdsUsecase {
     }
 
     async execute(): Promise<any> {
-        const scriptPath = path.join(this.projectRoot, "src/scripts");
+        const scriptPath = path.join(this.projectRoot, "scripts");
+
+        console.log(`Script Path: ${scriptPath}`);
         
         const shellAdapter = ShellFactory.getShellAdapter();
 
@@ -28,10 +30,12 @@ export default class GetAvdsUsecase {
             let output = "";
             
             process.stdout.on("data", (data: { toString: () => string; }) => {
+                console.log(data.toString());
                 output += data.toString();
             });
 
             process.stderr.on("data", (err: any) => {
+                console.error(err.toString());
                 reject(new DataCaptureError(err.toString()));
             });
 

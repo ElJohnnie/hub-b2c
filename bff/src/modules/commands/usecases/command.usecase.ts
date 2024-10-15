@@ -23,7 +23,7 @@ export default class CommandUseCase implements UseCaseInterface {
             throw new CommandNotProvidedError();
         }
         
-        const resolvedDir = path.resolve(this.projectRoot, 'src', dir);
+        const resolvedDir = path.resolve(this.projectRoot, dir);
         console.log(`Diretório: ${resolvedDir}`);
         console.log(`Comando: ${command}`);
 
