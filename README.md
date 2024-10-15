@@ -6,13 +6,13 @@
 
 **Hub B2C** é uma aplicação desktop desenvolvida utilizando **Electron**, **React** e **Express** para oferecer uma interface intuitiva e funcional aos desenvolvedores que trabalham na área de **Vivo Telefônica B2C**. Este projeto visa centralizar uma série de rotinas e necessidades de desenvolvimento do time B2C, facilitando o dia a dia e proporcionando uma experiência de usuário dinâmica e responsiva.
 
-A aplicação combina um back-end robusto utilizando **Express.js** com uma interface front-end moderna em **React**, e é projetada para centralizar comandos e a abertura de janelas necessárias para facilitar o fluxo de trabalho dos desenvolvedores.
+A aplicação combina um bff robusto utilizando **Express.js** com uma interface front-end moderna em **React**, e é projetada para centralizar comandos e a abertura de janelas necessárias para facilitar o fluxo de trabalho dos desenvolvedores.
 
 ## Tecnologias Utilizadas
 
 - **Electron**: Para empacotamento e execução do aplicativo como um software desktop.
 - **React.js**: Framework JavaScript para construção da interface de usuário.
-- **Express.js**: Framework Node.js utilizado para gerenciar as rotas do servidor e API RESTful.
+- **Express.js**: Framework Node.js utilizado para gerenciar as rotas para executar os comandos requisitados.
 - **Node.js**: Ambiente de execução JavaScript utilizado no software como um todo.
 - **TypeScript**: Linguagem usada para adicionar tipagem estática ao JavaScript, melhorando a segurança e manutenibilidade do código.
 - **Python 3**: Inicialmente para gerar as janelas chromedriver, mas em princípio será descontinuado.
@@ -27,7 +27,7 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
 - [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads): A aplicação utiliza o ChromeDriver para algumas funcionalidades, como testes ou interação com o navegador, e precisa estar instalado e configurado corretamente. Você pode baixar o ChromeDriver e adicioná-lo ao seu PATH.
 - [Python3](https://www.python.org/): O Python3 é necessário para o funcionamento de algumas partes do projeto. Certifique-se de que ele está instalado e configurado corretamente no seu sistema.
 
-**Aviso**: No [Ubuntu](https://ubuntu.com/), o **Xterm** também pode ser necessário para o correto funcionamento da interface gráfica do Electron, pois ele é utilizado para manipulação de terminais em algumas distribuições. Para instalar o Xterm, use o seguinte comando:
+**Aviso**: No [Ubuntu(Linux)](https://ubuntu.com/), o **Xterm** também pode ser necessário para o correto funcionamento da interface gráfica do Electron, pois ele é utilizado para manipulação de terminais em algumas distribuições. Para instalar o Xterm, use o seguinte comando:
     ```bash
     sudo apt install xterm
 
