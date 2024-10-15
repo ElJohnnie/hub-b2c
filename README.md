@@ -66,7 +66,7 @@ sudo apt install xterm
 
 Execute o comando abaixo na raíz do projeto para instalar todas as dependências do projeto:
 ```bash
-npm full-install
+npm run full-install
 ```
 
 ## Execução
