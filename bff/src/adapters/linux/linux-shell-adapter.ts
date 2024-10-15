@@ -2,7 +2,7 @@ import { exec, spawn } from 'child_process';
 import { ShellAdapter } from '../../@shared/adapters/shell-adapter';
 import path from 'path';
 
-export class LinuxShellAdapter extends ShellAdapter {
+export class LinuxShellAdapter implements ShellAdapter {
   openCli(command: string, args: string[], options: any) {
     const terminalCommand = 'xterm';
     const terminalArgs = ['-e', command, ...args];
