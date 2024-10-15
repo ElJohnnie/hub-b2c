@@ -34,6 +34,19 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
     hub-b2c/
     ├── client/                     # Aplicação React (front-end), escopo de layout
     ├── bff/                        # Aplicação Express (back-end), responsável por servir toda a aplicação
+        ├── node_modules/               # Dependências do projeto
+        └── src/                        # Arquivos principais do Express
+            ├── @shared/                 # Módulos compartilhados para padronização entre todo o bff
+            ├── adapters/                # Adapters para uso especifico das clis em diferentes sistemas operacionais
+            ├── factories/               # Factories para criação de objetos
+            └── modules/                    # Módulos de funcionalidades da aplicação 
+                ├── routes/                  # Rotas do módulo
+                ├── usecases/                # Casos de uso do módulo
+                └── controllers/             # Controladores do módulo
+            ├── scripts/               # Scripts de execução auxiliares e comandos gerais
+            ├── webdriver              # Scripts para manipulação do ChromeDriver
+            └── server.ts                 # Arquivo principal do Express
+    ├── scripts/                    # Scripts de execução auxiliares
     ├── dist/                       # Aplicação empacotada (AppImage, deb, exe, etc.)
     ├── src/                        # Arquivos principais do Electron
     │   └── dist/                   # Todos os arquivos compilados da aplicação
@@ -41,7 +54,42 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
     ├── package.json
     └── README.md
 
+
+## Instalação
+**Linux**: Para funcionar o projeto, instale o xterm:
+```bash
+sudo apt install xterm
+```
+**Windows**: O projeto roda com o CMD nativo:
+
+Execute o comando abaixo na raíz do projeto para instalar todas as dependências do projeto:
+```bash
+npm full-install
+```
+
+## Execução
+```bash
+npm run start
+```
+Irá executar o projeto via Electron como um todo para vias de desenvolvimento.
+
+## Empacotamento
+```bash
+npm run package
+```
+Irá empacotar o projeto para a plataforma atual, gerando um arquivo executável conforme seu sistema operacional na pasta `dist/`.
+
+## Padrão de desenvolvimento
+TODO THIS
+..................................................
+..................................................
+
 ## Erros Comuns
+
+### O projeto nunca desocupa as portas
+Se o projeto não liberar as portas após a execução, verifique se o processo foi encerrado corretamente. Em alguns casos, o Electron pode não encerrar corretamente o processo, e você pode precisar encerrá-lo manualmente.
+Também limpar as portas manualmente, esse ajuste está como prioriedade.
+
 
 ### Erro de GLIBCXX
 Caso ocorra um erro relacionado ao `libstdc++.so.6`, verifique se todas as dependências do sistema estão atualizadas, ou ajuste as versões de bibliotecas conforme necessário.
