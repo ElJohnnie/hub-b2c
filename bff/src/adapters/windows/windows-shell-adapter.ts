@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import { ShellAdapter } from '../../@shared/adapters/shell-adapter';
 import path from 'path';
 
@@ -9,8 +9,15 @@ export class WindowsShellAdapter extends ShellAdapter {
     return spawn(terminalCommand, terminalArgs, options);
   }
 
-  runScript(scriptPath: string, args: string[] = [], options: any) {
+  runScript(scriptPath?: string, args: string[] = [], options?: any) {
+    if (!scriptPath) {
+      return spawn('cmd.exe', ['/c', ...args], options);
+    }
     const script = path.resolve(scriptPath);
     return spawn('cmd.exe', ['/c', script, ...args], options);
+  }
+
+  runWebdriver(command: string, scriptDir: string) {
+    return exec(command, { shell: 'cmd.exe', cwd: scriptDir });
   }
 }

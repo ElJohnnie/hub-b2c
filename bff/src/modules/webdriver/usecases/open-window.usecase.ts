@@ -14,31 +14,38 @@ export default class OpenWindowUsecase implements UseCaseInterface {
     async execute(body: { dir: string; command: string; shell?: string }): Promise<any> {
         const { dir, command, shell } = body;
 
-        const scriptPath = path.join(this.projectRoot, 'src', dir);
-        const fullCommand = `cd ${scriptPath} && ${command}`;
-
-        console.log(`Comando recebido: ${fullCommand}`);
-        console.log(`Diretório: ${scriptPath}`);
+        const scriptDir = path.join(this.projectRoot, 'src', dir);
+        console.log(`Diretório do script: ${scriptDir}`);
         console.log(`Comando: ${command}`);
-        console.log(`Shell: ${shell}`);
 
         const shellAdapter = ShellFactory.getShellAdapter();
 
-        const process = shellAdapter.runScript(fullCommand, [], { shell: shell || '/bin/bash' });
+        const process = shellAdapter.runWebdriver(command, scriptDir);
 
         return new Promise<string>((resolve, reject) => {
-            process.stdout.on("data", (data: { toString: () => string | PromiseLike<string>; }) => {
+            let output = '';
+
+            process.stdout?.on("data", (data: { toString: () => string; }) => {
+                output += data.toString();
                 console.log(`Saída: ${data.toString()}`);
-                resolve(data.toString());
             });
 
-            process.stderr.on("data", (error: { toString: () => any; }) => {
-                console.error(`Erro capturado: ${error.toString()}`);
+            process.stderr?.on("data", (error: { toString: () => string; }) => {
+                console.log(`Erro: ${error.toString()}`);
                 reject(new ProcessOutputError(error.toString()));
             });
 
+            process.on("close", (code: number) => {
+                if (code === 0) {
+                    resolve(output);
+                } else {
+                    reject(new ProcessExecutionError(code));
+                }
+            });
+
             process.on("error", (err: any) => {
-                reject(new ProcessExecutionError(err.toString())); 
+                console.log(err)
+                reject(new ProcessExecutionError(err.toString()));
             });
         });
     }
