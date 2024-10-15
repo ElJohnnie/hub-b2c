@@ -6,6 +6,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 let mainWindow = null;
+let serverProcess = null;
 const SERVER_PORT = 2345 || process.env.SERVER_PORT;
 const serverPath = path.join(__dirname, 'dist');
 const serverScriptPath = path.join(serverPath, 'server.js');
@@ -44,7 +45,7 @@ function startBackend() {
     return Promise.reject(new Error(errorMsg));
   }
 
-  const serverProcess = fork(serverScriptPath, {
+  serverProcess = fork(serverScriptPath, {
     cwd: serverPath,
     env: process.env,
     stdio: 'pipe',
@@ -104,6 +105,13 @@ async function initializeApp() {
     app.quit();
   }
 }
+
+app.on('before-quit', () => {
+  if (serverProcess) {
+    console.log('Encerrando o processo do servidor...');
+    serverProcess.kill('SIGINT');
+  }
+});
 
 app.on('ready', initializeApp);
 

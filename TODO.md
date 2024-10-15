@@ -6,7 +6,7 @@
 - [ ] Acesso ao Azure (Scrapping com MFA/OTP)
 
 ## Bugs a Corrigir
-- [ ] Não limpando as portas corretamente ao finalizar a execução
+- [X] Não limpando as portas corretamente ao finalizar a execução
 
 ## Melhorias
 - [ ] Desenvolver solução para Mac

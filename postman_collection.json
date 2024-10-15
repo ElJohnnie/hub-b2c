@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "84b5819d-d338-4009-a88f-5a2ec28185cd",
+		"name": "[HUB-B2C]",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14835750",
+		"_collection_link": "https://interstellar-capsule-991729.postman.co/workspace/...~afc883df-e3b4-4dd1-a09c-88a898c4851a/collection/14835750-84b5819d-d338-4009-a88f-5a2ec28185cd?action=share&source=collection_link&creator=14835750"
+	},
+	"item": [
+		{
+			"name": "execute-shell-command",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dir\": \"scripts\",\n    \"command\": \"tracking.sh\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2345/execute-shell-command",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2345",
+					"path": [
+						"execute-shell-command"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get avds",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2345/emulator/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2345",
+					"path": [
+						"emulator",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "open emulator",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:2345/emulator",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2345",
+					"path": [
+						"emulator"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "open window",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:2345/open-window",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2345",
+					"path": [
+						"open-window"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
