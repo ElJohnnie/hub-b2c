@@ -92,11 +92,6 @@ TODO THIS
 
 ## Erros Comuns
 
-### O projeto nunca desocupa as portas
-Se o projeto não liberar as portas após a execução, verifique se o processo foi encerrado corretamente. Em alguns casos, o Electron pode não encerrar corretamente o processo, e você pode precisar encerrá-lo manualmente.
-Também limpar as portas manualmente, esse ajuste está como prioriedade.
-
-
 ### Erro de GLIBCXX
 Caso ocorra um erro relacionado ao `libstdc++.so.6`, verifique se todas as dependências do sistema estão atualizadas, ou ajuste as versões de bibliotecas conforme necessário.
 
