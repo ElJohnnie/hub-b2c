@@ -31,8 +31,9 @@ Antes de iniciar a instalação do projeto, você precisará ter as seguintes fe
 - [Python3](https://www.python.org/): O Python3 é necessário para o funcionamento de algumas partes do projeto. Certifique-se de que ele está instalado e configurado corretamente no seu sistema.
 
 **Aviso**: No [Ubuntu(Linux)](https://ubuntu.com/), o **Xterm** também pode ser necessário para o correto funcionamento da interface gráfica do Electron, pois ele é utilizado para manipulação de terminais em algumas distribuições. Para instalar o Xterm, use o seguinte comando:
-    ```bash
-    sudo apt install xterm
+```bash
+sudo apt install xterm
+```
 
 ## Estrutura do Projeto
 
