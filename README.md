@@ -17,7 +17,7 @@ A aplicação combina um bff robusto utilizando **Express.js** com uma interface
 - **React.js**: Framework JavaScript para construção da interface de usuário.
 - **Express.js**: Framework Node.js utilizado para gerenciar as rotas para executar os comandos requisitados.
 - **Node.js**: Ambiente de execução JavaScript utilizado no software como um todo.
-- **TypeScript**: Linguagem usada para adicionar tipagem estática ao JavaScript, melhorando a segurança e manutenibilidade do código.
+- **TypeScript**: Superset usada para adicionar tipagem estática ao JavaScript, melhorando a segurança e manutenibilidade do código.
 - **Python 3**: Inicialmente para gerar as janelas chromedriver, mas em princípio será descontinuado.
 
 ## Pré-requisitos
