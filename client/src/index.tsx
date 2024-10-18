@@ -8,7 +8,7 @@ import {
   Locale,
   RegionCode,
 } from "@telefonica/mistica";
-import AppController from "./pages/App/Controllers/app.controller";
+import AppController from "./pages/App/controllers/app.controller";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

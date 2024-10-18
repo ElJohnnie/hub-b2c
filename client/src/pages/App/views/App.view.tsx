@@ -118,7 +118,7 @@ export const AppView = ({
                               onPress={() =>
                                 handleExecuteShellCommand(
                                   "scripts",
-                                  "tracking.sh"
+                                  "tracking"
                                 )
                               }
                             >

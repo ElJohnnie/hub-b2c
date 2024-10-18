@@ -39,9 +39,9 @@ export default class CommandUseCase implements UseCaseInterface {
     console.log(`Comando: ${command}`);
 
     if (os.platform() === 'win32') {
-      this.finalCommand = `${command.trim()}`;
+      this.finalCommand = `${command.trim()}.bat`;
     } else {
-      this.finalCommand = `sh ${command.trim()}`;
+      this.finalCommand = `sh ${command.trim()}.sh`;
     }
 
     console.log(`Comando completo: ${this.finalCommand}`);
