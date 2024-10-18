@@ -19,6 +19,7 @@ export class ExecuteCommandProvider {
         shell
       );
       return result;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error: unknown) {
       throw new Error("Erro ao executar comando");
     }
