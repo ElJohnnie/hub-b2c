@@ -1,7 +1,7 @@
 import UseCaseInterface from '../../../@shared/modules/usecases/use-cases.interface';
 
 export default class CommandController {
-  constructor(private CommandUsecase: UseCaseInterface) {}
+  constructor(private readonly CommandUsecase: UseCaseInterface) {}
 
   async executeCommand(req: any, res: any) {
     try {

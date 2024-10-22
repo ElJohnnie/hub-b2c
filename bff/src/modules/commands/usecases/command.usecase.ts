@@ -9,11 +9,11 @@ import {
 } from '../../../@shared/exceptions/exceptions';
 
 export default class CommandUseCase implements UseCaseInterface {
-  private projectRoot: string;
+  private readonly projectRoot: string;
+  private readonly shellAdapter: ShellAdapter;
   private resolvedDir: string;
   private finalCommand: string;
   private processCommand: any;
-  private shellAdapter: ShellAdapter;
 
   constructor(projectRoot: string) {
     this.projectRoot = projectRoot;

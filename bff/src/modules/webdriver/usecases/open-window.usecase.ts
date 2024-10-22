@@ -1,20 +1,17 @@
 import UseCaseInterface from '../../../@shared/modules/usecases/use-cases.interface';
 import path from 'path';
 import { ShellFactory } from '../../../factories/shell-factory';
-import { ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
-import { ProcessOutputError } from '../../../@shared/exceptions/exceptions';
+import { ProcessExecutionError, ProcessOutputError } from '../../../@shared/exceptions/exceptions';
 import { ShellAdapter } from '../../../@shared/adapters/shell-adapter';
 
 export default class OpenWindowUsecase implements UseCaseInterface {
-  private projectRoot: string;
+  private readonly projectRoot: string;
+  private readonly shellAdapter: ShellAdapter;
   private scriptPath: string;
-  private scriptFile: string;
-  private shellAdapter: ShellAdapter;
   private processCommand: any;
 
   constructor(projectRoot: string) {
     this.scriptPath = ''; 
-    this.scriptFile = '';
     this.projectRoot = projectRoot;
     this.shellAdapter = ShellFactory.getShellAdapter();
   }
@@ -24,7 +21,7 @@ export default class OpenWindowUsecase implements UseCaseInterface {
     command: string;
     shell?: string;
   }): Promise<any> {
-    const { dir, command, shell } = body;
+    const { dir, command } = body;
 
     this.scriptPath = path.join(this.projectRoot, dir);
     console.log(`Diretório do script: ${this.scriptPath}`);
