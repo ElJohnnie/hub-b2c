@@ -1,15 +1,14 @@
 import path from 'path';
 import os from 'os';
 import { ShellFactory } from '../../../factories/shell-factory';
-import { DataCaptureError } from '../../../@shared/exceptions/exceptions';
-import { ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
+import { DataCaptureError, ProcessExecutionError } from '../../../@shared/exceptions/exceptions';
 import { ShellAdapter } from '../../../@shared/adapters/shell-adapter';
 
 export default class GetAvdsUsecase {
-  private projectRoot: string;
+  private readonly projectRoot: string;
   private scriptPath: string;
   private scriptFile: string;
-  private shellAdapter: ShellAdapter;
+  private readonly shellAdapter: ShellAdapter;
   private processCommand: any;
 
   constructor(projectRoot: string) {
@@ -20,7 +19,7 @@ export default class GetAvdsUsecase {
   }
 
   async execute(): Promise<any> {
-    this.scriptPath = path.join(this.projectRoot, 'scripts');
+    this.scriptPath = path.join(this.projectRoot, 'commands');
 
     console.log(`Script Path: ${this.scriptPath}`);
 

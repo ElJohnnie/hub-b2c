@@ -117,7 +117,7 @@ export const AppView = ({
                             <ButtonPrimary
                               onPress={() =>
                                 handleExecuteShellCommand(
-                                  "scripts",
+                                  "commands",
                                   "tracking"
                                 )
                               }
