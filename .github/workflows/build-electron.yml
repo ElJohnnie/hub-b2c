@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Windows ZIP as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-hub-b2c.zip
           path: windows-hub-b2c.zip
@@ -110,7 +110,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Ubuntu ZIP as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ubuntu-hub-b2c.zip
           path: ubuntu-hub-b2c.zip
@@ -124,12 +124,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Download Windows ZIP artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windows-hub-b2c.zip
 
       - name: Download Ubuntu ZIP artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ubuntu-hub-b2c.zip
 
