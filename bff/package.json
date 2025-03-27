@@ -5,8 +5,8 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "tsc && cp -R src/public ../src/dist/public && cp -R src/commands/scripts ../src/dist/commands/scripts && cp -R src/webdriver ../src/dist/webdriver",
-    "build:windows": "tsc && xcopy src\\public dist\\public /E /I && xcopy src\\commands\\scripts dist\\commands\\scripts /E /I && xcopy src\\webdriver dist\\webdriver /E /I",
+    "build": "tsc && cp -R src/public ../src/dist/public && cp -R src/commands ../src/dist/commands && cp -R src/webdriver ../src/dist/webdriver",
+    "build:windows": "tsc && xcopy src\\public dist\\public /E /I && xcopy src\\commands dist\\commands /E /I && xcopy src\\webdriver dist\\webdriver /E /I",
     "dev": "nodemon --watch src --exec ts-node src/server.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
