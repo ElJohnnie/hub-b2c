@@ -5,8 +5,6 @@
 **Imagem do mvp:**
 ![Hub B2C](assets/hub-b2c.png)
 
-**Observação**: Este projeto ainda está em desenvolvimento e pode sofrer alterações significativas.
-
 **Hub B2C** é uma aplicação desktop desenvolvida utilizando **Electron**, **React** e **Express** para oferecer uma interface intuitiva e funcional aos desenvolvedores que trabalham na área de **Vivo Telefônica B2C**. Este projeto visa centralizar uma série de rotinas e necessidades de desenvolvimento do time B2C, facilitando o dia a dia e proporcionando uma experiência de usuário dinâmica e responsiva.
 
 A aplicação combina um bff robusto utilizando **Express.js** com uma interface front-end moderna em **React**, e é projetada para centralizar comandos e a abertura de janelas necessárias para facilitar o fluxo de trabalho dos desenvolvedores.
